@@ -145,6 +145,7 @@ function M.setup()
 		end,
 	})
 
+	require("select-digraphs").setup()
 end
 
 return M
