@@ -105,7 +105,6 @@ return {
 	},
 	build = function()
 		vim.cmd([[TSUpdate]])
-		-- Disable in large C++ buffers & JavaScript buffers
 	end,
 	config = function(_, opts)
 		local parser_configs = require("nvim-treesitter.parsers").get_parser_configs()
@@ -120,7 +119,6 @@ return {
 			callback = function()
 				vim.opt_local.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 				vim.opt_local.foldmethod = "expr"
-				vim.opt_local.indentexpr = "nvim_treesitter#indent()"
 			end,
 			desc = "Set fold method for treesitter",
 		})
