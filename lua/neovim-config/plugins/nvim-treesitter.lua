@@ -1,3 +1,32 @@
+-- Clean path for use in a prefix comparison
+---@param input string
+---@return string
+local function clean_path(input)
+	local pth = vim.fn.fnamemodify(input, ":p")
+	if vim.fn.has "win32" == 1 then
+		pth = pth:gsub("/", "\\")
+	end
+	return pth
+end
+
+-- Checks if parser is installed with nvim-treesitter
+---@param lang string
+---@return boolean
+local function is_installed(lang)
+	local matched_parsers = vim.api.nvim_get_runtime_file("parser/" .. lang .. ".so", true) or {}
+	local install_dir = require("nvim-treesitter.configs").get_parser_install_dir()
+	if not install_dir then
+		return false
+	end
+	install_dir = clean_path(install_dir)
+	for _, path in ipairs(matched_parsers) do
+		local abspath = clean_path(path)
+		if vim.startswith(abspath, install_dir) then
+			return true
+		end
+	end
+	return false
+end
 vim.g.nvim_treesitter = {
 	installed_parser = {
 		"bash",
@@ -50,7 +79,6 @@ vim.g.nvim_treesitter = {
 		"zig",
 	},
 	parser_configs = {
-
 		-- TODO: Use repo in https://github.com/serenadeai/tree-sitter-scss/pull/19
 		scss = {
 			install_info = {
@@ -80,7 +108,7 @@ vim.g.nvim_treesitter.should_highlight_disable = function(lang, bufnr)
 	local line_count = vim.api.nvim_buf_line_count(bufnr or 0)
 
 	return vim.g.nvim_treesitter.line_threshold[lang] ~= nil
-		and line_count > vim.g.nvim_treesitter.line_threshold[lang].base
+	    and line_count > vim.g.nvim_treesitter.line_threshold[lang].base
 end
 
 vim.g.nvim_treesitter.should_buffer_higlight_disable = function()
@@ -93,7 +121,6 @@ return {
 	cmd = "TSUpdate",
 	event = { "BufReadPost", "BufNewFile" },
 	opts = {
-		ensure_installed = vim.g.nvim_treesitter.installed_parser,
 		highlight = {
 			enable = true,
 			additional_vim_regex_highlighting = false,
@@ -107,6 +134,7 @@ return {
 		vim.cmd([[TSUpdate]])
 	end,
 	config = function(_, opts)
+		-- Extend or override any treesitter configs:
 		local parser_configs = require("nvim-treesitter.parsers").get_parser_configs()
 		for f, c in pairs(vim.g.nvim_treesitter.parser_configs) do
 			parser_configs[f] = c
@@ -114,11 +142,21 @@ return {
 		local ts_foldexpr_augroup_id = vim.api.nvim_create_augroup("nvim_treesitter_foldexpr", {})
 
 		vim.api.nvim_create_autocmd("FileType", {
-			pattern = vim.fn.join(opts.ensure_installed, ","),
+			pattern = vim.fn.join(vim.tbl_keys(parser_configs), ","),
 			group = ts_foldexpr_augroup_id,
 			callback = function()
 				vim.opt_local.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 				vim.opt_local.foldmethod = "expr"
+				local lang = require("nvim-treesitter.parsers").get_buf_lang()
+				if
+				    require("nvim-treesitter.parsers").get_parser_configs()[lang]
+				    and not is_installed(lang)
+				then
+					if lang == "markdown" then
+						vim.cmd("TSInstall markdown_inline")
+					end
+					vim.cmd(string.format("TSInstall %s", lang))
+				end
 			end,
 			desc = "Set fold method for treesitter",
 		})
