@@ -112,6 +112,11 @@ local features = {
 }
 
 local function on_attach(client, bufnr)
+	-- Turn on debug-level logging for LSP:
+	if vim.g.neovim_config_lsp_debug then
+		vim.lsp.set_log_level("trace")
+	end
+
 	for feature, _ in pairs(client.server_capabilities) do
 		if type(features[feature]) == "function" then
 			features[feature](client, bufnr)
