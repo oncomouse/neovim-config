@@ -51,7 +51,19 @@ function M.setup()
 	})
 
 	vim.api.nvim_create_user_command("LazyGit", ":terminal lazygit<cr>", {
-		force = true
+		force = true,
+		desc = "Load lazygit in a terminal.",
+	})
+
+	vim.api.nvim_create_user_command("Mf", function(args)
+		local file = vim.uv.fs_realpath(args.args) or args.args
+		vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
+		vim.cmd("e " .. file)
+	end, {
+		desc =
+		"Implement the functionality of mf: if directory does not exist for new file create it before creating the file.",
+		complete = "dir",
+		nargs = 1,
 	})
 end
 
