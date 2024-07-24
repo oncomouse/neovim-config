@@ -1,8 +1,8 @@
 return {
 	"nvimtools/none-ls.nvim",
 	dependencies = {
-		{ "williamboman/mason.nvim", config = true },
 		"nvimtools/none-ls-extras.nvim",
+		"mason.nvim",
 		"jay-babu/mason-null-ls.nvim",
 	},
 	lazy = true,
