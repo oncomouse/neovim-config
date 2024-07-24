@@ -18,10 +18,15 @@ return {
 		{ "nvim-telescope/telescope-file-browser.nvim" },
 		{ "nvim-telescope/telescope-ui-select.nvim" },
 	},
+	-- Shim vim.ui.select to lazy load telescope
+	init = function()
+		vim.ui.select = function(...)
+			require("lazy.core.loader").load("telescope.nvim", { cmd = "vim.ui.select" }, {})
+			vim.ui.select(...)
+		end
+	end,
 	cmd = "Telescope",
 	keys = function()
-		local builtin = require("telescope.builtin")
-		local ivy = require("telescope.themes").get_ivy()
 		return {
 			{
 				"<leader>sb",
@@ -110,7 +115,7 @@ return {
 			-- pickers = {}
 			extensions = {
 				["ui-select"] = {
-					require("telescope.themes").get_dropdown(),
+					require("telescope.themes").get_ivy(),
 				},
 				["file_browser"] = {
 					theme = "ivy",
