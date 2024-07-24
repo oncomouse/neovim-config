@@ -45,4 +45,9 @@ return {
 			vim.g.startuptime_tries = 10
 		end,
 	}, -- :StartupTime for profiling startup
+
+	{
+		"oncomouse/lazygit.nvim",
+		cmd = "LazyGit",
+	}, -- :LazyGit for calling lazygit
 }
