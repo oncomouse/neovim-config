@@ -1,4 +1,6 @@
 return {
+	-- Base requirements:
+	{ "nvim-lua/plenary.nvim", lazy = true },
 	-- Editor Enhancements:
 	{
 		"tpope/vim-sleuth",
@@ -25,12 +27,14 @@ return {
 			{
 				"g*",
 				"<Plug>(asterisk-gz*)",
-				desc = "Search forward for the [count]'th occurrence of the word (or part of a word) nearest to the cursor",
+				desc =
+				"Search forward for the [count]'th occurrence of the word (or part of a word) nearest to the cursor",
 			},
 			{
 				"g#",
 				"<Plug>(asterisk-gz#)",
-				desc = "Search backward for the [count]'th occurrence of the word (or part of a word) nearest to the cursor",
+				desc =
+				"Search backward for the [count]'th occurrence of the word (or part of a word) nearest to the cursor",
 			},
 		},
 		init = function()
