@@ -6,9 +6,5 @@ vim.opt_local.spell = true
 vim.opt_local.showbreak = "NONE"
 -- vim.opt_local.omnifunc = "v:lua.require'nvim-ref.omnifunc'"
 
--- Remap gd to follow footnotes
-vim.keymap.set("n", "gd", "<Plug>(markdown-nvim-footnote)", { buffer = true })
-
-
 -- This messes up null-ls completion if uncommented:
 -- vim.opt_local.iskeyword = vim.opt_local.iskeyword + "',-,@-@"

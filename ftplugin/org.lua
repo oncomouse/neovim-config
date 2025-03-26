@@ -45,11 +45,6 @@ vim.keymap.set(
 	{ buffer = true }
 )
 
--- Load markdown.nvim for org:
-vim.b.markdown_nvim_unordered_list_chars = "[+-]"
-vim.b.markdown_nvim_unordered_default = "+"
-require("markdown").setup()
-
 -- Use to Pandoc to compile EC minutes
 local bn = vim.api.nvim_buf_get_name(0)
 if type(bn) == "string" and string.match(bn, "meetings.*executive") then
