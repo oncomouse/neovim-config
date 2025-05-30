@@ -1,40 +1,13 @@
 local M = {}
 
 function M.setup()
-	-- Navigation in insert mode:
-	vim.keymap.set("i", "<C-a>", function()
-		local sc = vim.fn.col(".")
-		vim.cmd("normal! ^")
-		if vim.fn.col(".") == sc then
-			vim.cmd("normal! 0")
-		end
-	end, { silent = true, desc = "Move to start of line" })
-	vim.keymap.set("i", "<C-e>", "<End>", { silent = true, desc = "Move to end of line" })
-	vim.keymap.set("i", "<C-b>", "<Left>", { desc = "Move back one character" })
-	vim.keymap.set("i", "<C-f>", "<Right>", { desc = "Move forward one character" })
-	local function move_word(backwards)
-		return function()
-			local _, new_position =
-				unpack(vim.fn.searchpos(backwards and [[\<]] or [[\>]], backwards and "bn" or "n", vim.fn.line(".")))
-			local row, col = unpack(vim.api.nvim_win_get_cursor(0))
-			if new_position == 0 then
-				col = backwards and 0 or #vim.api.nvim_get_current_line()
-			else
-				col = new_position - 1
-			end
-			vim.api.nvim_win_set_cursor(0, { row, col })
-		end
-	end
-	vim.keymap.set("i", "<A-b>", move_word(true), { desc = "Move back one word" })
-	vim.keymap.set("i", "<A-f>", move_word(), { desc = "Move forward one word" })
-
-	-- More emacs mappings:
-	vim.keymap.set("i", "<C-d>", "<C-o>x", { desc = "Delete character in front of mark." })
-	vim.keymap.set("i", "<M-H>", "<C-o><<", { desc = "Decrease indent." })
-	vim.keymap.set("i", "<M-L>", "<C-o>>>", { desc = "Decrease indent." })
+	-- Emacs-style delete maps:
 	vim.keymap.set("i", "", "<C-o>u", { desc = "Undo." })
 	vim.keymap.set("i", "", "<C-o>d0", { desc = "Kill line backwards." })
 	vim.keymap.set("i", "<M-BS>", "<C-o>db<C-o>i", { desc = "Kill word backwards." })
+
+	vim.keymap.set("i", "<M-H>", "<C-o><<", { desc = "Decrease indent." })
+	vim.keymap.set("i", "<M-L>", "<C-o>>>", { desc = "Decrease indent." })
 
 	-- Clear Currently Highlighted Regexp:
 	vim.keymap.set(

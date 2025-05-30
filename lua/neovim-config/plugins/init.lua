@@ -11,6 +11,7 @@ return {
 	}, -- Automatically set indent
 
 	-- Mappings and Commands:
+	"tpope/vim-rsi", -- Readline mappings
 	{
 		"haya14busa/vim-asterisk",
 		keys = {
