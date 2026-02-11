@@ -12,8 +12,20 @@
 local add, later = MiniDeps.add, MiniDeps.later
 local now_if_args = _G.Config.now_if_args
 
-
 _G.Config.use_ocaml = vim.fn.executable("opam") == 1
+_G.Config.enabled_lsps = {
+	"fish_lsp",
+	"lua_ls",
+	"bashls",
+	"html",
+	"cssls",
+	"jsonls",
+	"ts_ls",
+	"eslint",
+}
+if _G.Config.use_ocaml then
+	table.insert(_G.Config.enabled_lsps, "ocamllsp")
+end
 
 -- Utility Packages ===========================================================
 
@@ -70,7 +82,7 @@ now_if_args(function()
 		"javascript",
 		"bash",
 		"css",
-    "fish",
+		"fish",
 		"json",
 		"html",
 		"ocaml",
@@ -126,22 +138,7 @@ now_if_args(function()
 	-- the rules provided by 'nvim-lspconfig'.
 	-- Use `:h vim.lsp.config()` or 'after/lsp/' directory to configure servers.
 	-- Uncomment and tweak the following `vim.lsp.enable()` call to enable servers.
-	vim.lsp.enable({
-		-- For example, if `lua-language-server` is installed, use `'lua_ls'` entry
-    "fish_lsp",
-		"lua_ls",
-		"bashls",
-		"html",
-		"cssls",
-		"jsonls",
-		"ts_ls",
-		"eslint",
-	})
-	if _G.Config.use_ocaml then
-		vim.lsp.enable({
-			"ocamllsp",
-		})
-	end
+	vim.lsp.enable(_G.Config.enabled_lsps)
 end)
 
 -- Formatting =================================================================
@@ -257,14 +254,22 @@ now_if_args(function()
 		"shfmt", -- bashls dependecy
 	}
 
-	ensure_installed = vim.tbl_extend("keep", ensure_installed, vim.tbl_keys(vim.lsp._enabled_configs))
-
 	add("mason-org/mason.nvim")
 	add("mason-org/mason-lspconfig.nvim")
 	add("LittleEndianRoot/mason-conform")
 	add("WhoIsSethDaniel/mason-tool-installer.nvim")
 	require("mason").setup()
 	require("mason-lspconfig").setup()
+	-- Use autocmds to install required LSPs:
+	local installed_servers = require("mason-lspconfig").get_installed_servers()
+	for _, lsp in pairs(_G.Config.enabled_lsps) do
+		if not vim.tbl_contains(installed_servers, lsp) then
+			local mappings = require("mason-lspconfig").get_mappings()
+			_G.Config.new_autocmd("FileType", vim.lsp.config[lsp].filetype, function(ev)
+				vim.cmd("MasonInstall " .. mappings["lspconfig_to_package"][lsp])
+			end)
+		end
+	end
 	require("mason-conform").setup({
 		quiet_mode = true,
 	})
