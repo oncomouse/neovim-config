@@ -189,6 +189,11 @@ end)
 
 -- oncomouse plugins ==========================================================
 
+now_if_args(function()
+  add("oncomouse/markdown.nvim")
+  require("markdown").setup()
+end)
+
 -- Emacs-style motions in Neovim
 later(function()
 	add("tpope/vim-rsi")
