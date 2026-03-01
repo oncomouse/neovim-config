@@ -268,11 +268,13 @@ now_if_args(function()
 	-- Use autocmds to install required LSPs:
 	for _, lsp in pairs(_G.Config.enabled_lsps) do
 		local mappings = require("mason-lspconfig").get_mappings()
-		_G.Config.new_autocmd("FileType", vim.lsp.config[lsp].filetypes, function(ev)
-			if not vim.tbl_contains(require("mason-lspconfig").get_installed_servers(), lsp) then
-				vim.cmd("MasonInstall " .. mappings["lspconfig_to_package"][lsp])
-			end
-		end)
+		if not vim.tbl_contains(require("mason-lspconfig").get_installed_servers(), lsp) then
+			_G.Config.new_autocmd("FileType", vim.lsp.config[lsp].filetypes, function(ev)
+				if not vim.tbl_contains(require("mason-lspconfig").get_installed_servers(), lsp) then
+					vim.cmd("MasonInstall " .. mappings["lspconfig_to_package"][lsp])
+				end
+			end)
+		end
 	end
 	require("mason-conform").setup({
 		quiet_mode = true,
