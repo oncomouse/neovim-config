@@ -138,7 +138,7 @@ now_if_args(function()
 	-- the rules provided by 'nvim-lspconfig'.
 	-- Use `:h vim.lsp.config()` or 'after/lsp/' directory to configure servers.
 	-- Uncomment and tweak the following `vim.lsp.enable()` call to enable servers.
-	vim.lsp.enable(_G.Config.enabled_lsps)
+	-- vim.lsp.enable(_G.Config.enabled_lsps)
 end)
 
 -- Formatting =================================================================
@@ -190,8 +190,8 @@ end)
 -- oncomouse plugins ==========================================================
 
 now_if_args(function()
-  add("oncomouse/markdown.nvim")
-  require("markdown").setup()
+	add("oncomouse/markdown.nvim")
+	require("markdown").setup()
 end)
 
 -- Emacs-style motions in Neovim
@@ -266,14 +266,13 @@ now_if_args(function()
 	require("mason").setup()
 	require("mason-lspconfig").setup()
 	-- Use autocmds to install required LSPs:
-	local installed_servers = require("mason-lspconfig").get_installed_servers()
 	for _, lsp in pairs(_G.Config.enabled_lsps) do
-		if not vim.tbl_contains(installed_servers, lsp) then
-			local mappings = require("mason-lspconfig").get_mappings()
-			_G.Config.new_autocmd("FileType", vim.lsp.config[lsp].filetype, function(ev)
+		local mappings = require("mason-lspconfig").get_mappings()
+		_G.Config.new_autocmd("FileType", vim.lsp.config[lsp].filetypes, function(ev)
+			if not vim.tbl_contains(require("mason-lspconfig").get_installed_servers(), lsp) then
 				vim.cmd("MasonInstall " .. mappings["lspconfig_to_package"][lsp])
-			end)
-		end
+			end
+		end)
 	end
 	require("mason-conform").setup({
 		quiet_mode = true,
