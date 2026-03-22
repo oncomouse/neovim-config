@@ -245,25 +245,6 @@ nmap_leader('vV', '<Cmd>lua MiniVisits.remove_label("core")<CR>', 'Remove "core"
 nmap_leader('vl', '<Cmd>lua MiniVisits.add_label()<CR>',          'Add label')
 nmap_leader('vL', '<Cmd>lua MiniVisits.remove_label()<CR>',       'Remove label')
 
-vim.keymap.set({'n','x'}, 'p', '<Plug>(YankyPutAfter)')
-vim.keymap.set({'n','x'}, 'P', '<Plug>(YankyPutBefore)')
-vim.keymap.set({'n','x'}, 'gp', '<Plug>(YankyGPutAfter)')
-vim.keymap.set({'n','x'}, 'gP', '<Plug>(YankyGPutBefore)')
-vim.keymap.set({'i'}, '<m-y>', '<C-o><Plug>(YankyPreviousEntry)<C-o><Right>')
-vim.keymap.set({'n'}, '<m-y>', '<Plug>(YankyPreviousEntry)')
-vim.keymap.set({'n'}, '<m-Y>', '<Cmd>YankyRingHistory<CR>')
-
-nmap(']p', '<Plug>(YankyPutIndentAfterLinewise)')
-nmap('[p', '<Plug>(YankyPutIndentBeforeLinewise)')
-nmap(']P', '<Plug>(YankyPutIndentAfterLinewise)')
-nmap('[P', '<Plug>(YankyPutIndentBeforeLinewise)')
-nmap('>p', '<Plug>(YankyPutIndentAfterShiftRight)')
-nmap('<p', '<Plug>(YankyPutIndentAfterShiftLeft)')
-nmap('>P', '<Plug>(YankyPutIndentBeforeShiftRight)')
-nmap('<P', '<Plug>(YankyPutIndentBeforeShiftLeft)')
-nmap('=p', '<Plug>(YankyPutAfterFilter)')
-nmap('=P', '<Plug>(YankyPutBeforeFilter)')
-
 nmap('<M-o>', '<cmd>lua MiniBracketed.window("forward")<CR>')
 
 nmap('gG', function() MiniJump2d.start(MiniJump2d.builtin_opts.query) end, 'Jump to queried string')

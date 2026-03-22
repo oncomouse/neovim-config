@@ -225,12 +225,6 @@ later(function()
 	})
 end)
 
--- Emacs-style kill-ring support
-later(function()
-	add("gbprod/yanky.nvim")
-	require("yanky").setup()
-end)
-
 -- Magit emulation for Neovim
 later(function()
 	add("sindrets/diffview.nvim")
