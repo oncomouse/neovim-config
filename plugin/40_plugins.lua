@@ -259,10 +259,15 @@ now_if_args(function()
 		"shfmt", -- bashls dependecy
 	}
 
-	add("mason-org/mason.nvim")
-	add("mason-org/mason-lspconfig.nvim")
-	add("LittleEndianRoot/mason-conform")
-	add("WhoIsSethDaniel/mason-tool-installer.nvim")
+  add({
+    source = "mason-org/mason.nvim",
+    depends = {
+      "mason-org/mason-lspconfig.nvim",
+      "LittleEndianRoot/mason-conform",
+      "WhoIsSethDaniel/mason-tool-installer.nvim"
+    }
+  })
+
 	require("mason").setup()
 	require("mason-lspconfig").setup()
 	-- Use autocmds to install required LSPs:
