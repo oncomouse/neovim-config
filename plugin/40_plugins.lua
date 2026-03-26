@@ -11,6 +11,7 @@
 -- Make concise helpers for installing/adding plugins in two stages
 local add, later = MiniDeps.add, MiniDeps.later
 local now_if_args = _G.Config.now_if_args
+local now_if_headless = _G.Config.now_if_headless
 
 _G.Config.use_ocaml = vim.fn.executable("opam") == 1
 _G.Config.enabled_lsps = {
@@ -281,4 +282,21 @@ now_if_args(function()
 	require("mason-tool-installer").setup({
 		ensure_installed = ensure_installed,
 	})
+end)
+
+now_if_headless(function()
+  if vim.uv.fs_stat(vim.fs.abspath("~/.config/eca/config.json")) then
+    add({
+      source = "editor-code-assistant/eca-nvim",
+      depends = {
+        "MunifTanjim/nui.nvim",      -- Required: UI framework
+        "nvim-lua/plenary.nvim",     -- Optional: Enhanced async operations
+      }
+    })
+    require("eca").setup({
+      log = {
+        display = "split",
+      },
+    })
+  end
 end)

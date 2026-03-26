@@ -85,3 +85,4 @@ end
 -- Some plugins and 'mini.nvim' modules only need setup during startup if Neovim
 -- is started like `nvim -- path/to/file`, otherwise delaying setup is fine
 _G.Config.now_if_args = vim.fn.argc(-1) > 0 and MiniDeps.now or MiniDeps.later
+_G.Config.now_if_headless = #vim.api.nvim_list_uis() == 0 and MiniDeps.now or MiniDeps.later
