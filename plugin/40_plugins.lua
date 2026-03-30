@@ -18,11 +18,7 @@ Config.enabled_lsps = {
 	"fish_lsp",
 	"lua_ls",
 	"bashls",
-	"html",
-	"cssls",
-	"jsonls",
-	"ts_ls",
-	"eslint",
+  "biome",
 }
 if Config.use_ocaml then
 	table.insert(Config.enabled_lsps, "ocamllsp")
@@ -166,11 +162,6 @@ now_if_args(function()
 		formatters_by_ft = {
 			ocaml = { Config.use_ocaml and "ocamlformat" or nil },
 			lua = { "stylua" },
-			javascript = { "prettierd" },
-			typescript = { "prettierd" },
-			html = { "prettierd" },
-			css = { "prettierd" },
-			json = { "prettierd" },
 		},
 	})
 end)
