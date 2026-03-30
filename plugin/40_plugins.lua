@@ -9,12 +9,12 @@
 -- Use this file to install and configure other such plugins.
 
 -- Make concise helpers for installing/adding plugins in two stages
-local add, later = MiniDeps.add, MiniDeps.later
-local now_if_args = _G.Config.now_if_args
-local now_if_headless = _G.Config.now_if_headless
+local add, later, now = Config.add, Config.later, Config.now
+local now_if_args = Config.now_if_args
+local now_if_headless = #vim.api.nvim_list_uis() == 0 and Config.now or Config.later
 
-_G.Config.use_ocaml = vim.fn.executable("opam") == 1
-_G.Config.enabled_lsps = {
+Config.use_ocaml = vim.fn.executable("opam") == 1
+Config.enabled_lsps = {
 	"fish_lsp",
 	"lua_ls",
 	"bashls",
@@ -24,13 +24,13 @@ _G.Config.enabled_lsps = {
 	"ts_ls",
 	"eslint",
 }
-if _G.Config.use_ocaml then
-	table.insert(_G.Config.enabled_lsps, "ocamllsp")
+if Config.use_ocaml then
+	table.insert(Config.enabled_lsps, "ocamllsp")
 end
 
 -- Utility Packages ===========================================================
 
-MiniDeps.now(function()
+now(function()
 	add("nvim-lua/plenary.nvim")
 end)
 
@@ -114,7 +114,7 @@ now_if_args(function()
 	local ts_start = function(ev)
 		vim.treesitter.start(ev.buf)
 	end
-	_G.Config.new_autocmd("FileType", filetypes, ts_start, "Start tree-sitter")
+	Config.new_autocmd("FileType", filetypes, ts_start, "Start tree-sitter")
 end)
 
 -- Language servers ===========================================================
@@ -139,7 +139,7 @@ now_if_args(function()
 	-- the rules provided by 'nvim-lspconfig'.
 	-- Use `:h vim.lsp.config()` or 'after/lsp/' directory to configure servers.
 	-- Uncomment and tweak the following `vim.lsp.enable()` call to enable servers.
-	-- vim.lsp.enable(_G.Config.enabled_lsps)
+	-- vim.lsp.enable(Config.enabled_lsps)
 end)
 
 -- Formatting =================================================================
@@ -164,7 +164,7 @@ now_if_args(function()
 		-- Map of filetype to formatters
 		-- Make sure that necessary CLI tool is available
 		formatters_by_ft = {
-			ocaml = { _G.Config.use_ocaml and "ocamlformat" or nil },
+			ocaml = { Config.use_ocaml and "ocamlformat" or nil },
 			lua = { "stylua" },
 			javascript = { "prettierd" },
 			typescript = { "prettierd" },
@@ -233,7 +233,7 @@ later(function()
 end)
 
 -- My preferred theme
-MiniDeps.now(function()
+now(function()
 	add("catppuccin/nvim")
 	vim.cmd("colorscheme catppuccin")
 end)
@@ -266,10 +266,10 @@ now_if_args(function()
 	require("mason").setup()
 	require("mason-lspconfig").setup()
 	-- Use autocmds to install required LSPs:
-	for _, lsp in pairs(_G.Config.enabled_lsps) do
+	for _, lsp in pairs(Config.enabled_lsps) do
 		local mappings = require("mason-lspconfig").get_mappings()
 		if not vim.tbl_contains(require("mason-lspconfig").get_installed_servers(), lsp) then
-			_G.Config.new_autocmd("FileType", vim.lsp.config[lsp].filetypes, function(ev)
+			Config.new_autocmd("FileType", vim.lsp.config[lsp].filetypes, function(ev)
 				if not vim.tbl_contains(require("mason-lspconfig").get_installed_servers(), lsp) then
 					vim.cmd("MasonInstall " .. mappings["lspconfig_to_package"][lsp])
 				end
