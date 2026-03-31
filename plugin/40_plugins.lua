@@ -15,10 +15,11 @@ local now_if_headless = #vim.api.nvim_list_uis() == 0 and Config.now or Config.l
 
 Config.use_ocaml = vim.fn.executable("opam") == 1
 Config.enabled_lsps = {
-	"fish_lsp",
-	"lua_ls",
-	"bashls",
-  "biome",
+	"bashls", -- Shell
+  "biome", -- JavaScript, TypeScript, CSS, JSON, HTML
+	"fish_lsp", -- Fish
+	"lua_ls", -- Lua
+  "ruff", -- Python
 }
 if Config.use_ocaml then
 	table.insert(Config.enabled_lsps, "ocamllsp")
