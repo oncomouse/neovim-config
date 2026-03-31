@@ -420,28 +420,26 @@ end)
 -- It also works with snippet candidates provided by LSP server. Best experience
 -- when paired with 'mini.snippets' (which is set up in this file).
 later(function()
-	-- Customize post-processing of LSP responses for a better user experience.
-	-- Don't show 'Text' suggestions (usually noisy) and show snippets last.
-	local process_items_opts = { kind_priority = { Text = -1, Snippet = 99 } }
-	local process_items = function(items, base)
-		return MiniCompletion.default_process_items(items, base, process_items_opts)
-	end
-	require("mini.completion").setup({
-		lsp_completion = {
-			-- Without this config autocompletion is set up through `:h 'completefunc'`.
-			-- Although not needed, setting up through `:h 'omnifunc'` is cleaner
-			-- (sets up only when needed) and makes it possible to use `<C-u>`.
-			source_func = "omnifunc",
-			auto_setup = false,
-			process_items = process_items,
-		},
-		{
-			mappings = {
-				scroll_down = "",
-				scroll_up = "",
-			},
-		},
-	})
+  -- Customize post-processing of LSP responses for a better user experience.
+  -- Don't show 'Text' suggestions (usually noisy) and show snippets last.
+  local process_items_opts = { kind_priority = { Text = -1, Snippet = 99 } }
+  local process_items = function(items, base)
+    return MiniCompletion.default_process_items(items, base, process_items_opts)
+  end
+  require("mini.completion").setup({
+    lsp_completion = {
+      -- Without this config autocompletion is set up through `:h 'completefunc'`.
+      -- Although not needed, setting up through `:h 'omnifunc'` is cleaner
+      -- (sets up only when needed) and makes it possible to use `<C-u>`.
+      source_func = "omnifunc",
+      auto_setup = false,
+      process_items = process_items,
+    },
+    mappings = {
+      scroll_down = "",
+      scroll_up = "",
+    },
+  })
 
 	-- Set 'omnifunc' for LSP completion only when needed.
 	local on_attach = function(ev)
