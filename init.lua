@@ -42,31 +42,32 @@
 -- - "See 'path/to/file'" means see open file at described path and read it.
 -- - `:SomeCommand ...` or `:lua ...` means execute mentioned command.
 
--- Bootstrap 'mini.nvim' manually in a way that it gets managed by 'mini.deps'
-local mini_path = vim.fn.stdpath('data') .. '/site/pack/deps/start/mini.nvim'
-if not vim.loop.fs_stat(mini_path) then
-  vim.cmd('echo "Installing `mini.nvim`" | redraw')
-  local origin = 'https://github.com/nvim-mini/mini.nvim'
-  local clone_cmd = { 'git', 'clone', '--filter=blob:none', origin, mini_path }
-  vim.fn.system(clone_cmd)
-  vim.cmd('packadd mini.nvim | helptags ALL')
-  vim.cmd('echo "Installed `mini.nvim`" | redraw')
-end
-
--- Plugin manager. Set up immediately for `now()`/`later()` helpers.
+-- ┌────────────────┐
+-- │ Plugin manager │
+-- └────────────────┘
+--
+-- This config uses `vim.pack` - built-in plugin manager. Its main entry
+-- point is a `vim.pack.add()` function, which acts like a "smarter `:packadd`":
+-- load plugin after making sure it is installed from source. The state of
+-- installed plugins is recorded in the lockfile named 'nvim-pack-lock.json'.
 -- Example usage:
--- - `MiniDeps.add('...')` - use inside config to add a plugin
--- - `:DepsUpdate` - update all plugins
--- - `:DepsSnapSave` - save a snapshot of currently active plugins
+-- - `vim.pack.add({ ... })` - use inside config to add one or more plugins.
+-- - `:lua vim.pack.update()` - update all plugins; execute `:write` to confirm.
+-- - `:lua vim.pack.del({ ... })` - delete specific plugins.
 --
 -- See also:
--- - `:h MiniDeps-overview` - how to use it
--- - `:h MiniDeps-commands` - all available commands
--- - 'plugin/30_mini.lua' - more details about 'mini.nvim' in general
-require('mini.deps').setup()
+-- - `:h vim.pack-examples` - how to use it
+-- - `:h vim.pack-lockfile` - lockfile info
+-- - `:h vim.pack-events` - available events and plugin hooks examples
+-- - `:h vim.pack.update()` - more details about confirmation step
 
 -- Define config table to be able to pass data between scripts
 _G.Config = {}
+
+-- 'mini.nvim' - all-in-one plugin powering most MiniMax features.
+-- See 'plugin/30_mini.lua' for how it is used.
+-- Load now to have 'mini.misc' available for custom loading helpers.
+vim.pack.add({ 'https://github.com/nvim-mini/mini.nvim' })
 
 -- Loading helpers used to organize config into fail-safe parts. Example usage:
 -- - `now` - execute immediately. Use for what must be executed during startup.
@@ -85,7 +86,6 @@ _G.Config = {}
 -- - `:h MiniMisc.safely()`
 -- - 'plugin/30_mini.lua' and 'plugin/40_plugins.lua'
 local misc = require('mini.misc')
-Config.add = vim.pack.add
 Config.now = function(f) misc.safely('now', f) end
 Config.later = function(f) misc.safely('later', f) end
 Config.now_if_args = vim.fn.argc(-1) > 0 and Config.now or Config.later

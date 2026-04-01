@@ -9,7 +9,8 @@
 -- Use this file to install and configure other such plugins.
 
 -- Make concise helpers for installing/adding plugins in two stages
-local add, later, now = Config.add, Config.later, Config.now
+local add = vim.pack.add
+local later, now = Config.later, Config.now
 local now_if_args = Config.now_if_args
 local now_if_headless = #vim.api.nvim_list_uis() == 0 and Config.now or Config.later
 
