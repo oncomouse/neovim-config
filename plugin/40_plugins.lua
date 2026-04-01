@@ -16,10 +16,10 @@ local now_if_headless = #vim.api.nvim_list_uis() == 0 and Config.now or Config.l
 Config.use_ocaml = vim.fn.executable("opam") == 1
 Config.enabled_lsps = {
 	"bashls", -- Shell
-  "biome", -- JavaScript, TypeScript, CSS, JSON, HTML
+	"biome", -- JavaScript, TypeScript, CSS, JSON, HTML
 	"fish_lsp", -- Fish
 	"lua_ls", -- Lua
-  "ruff", -- Python
+	"ruff", -- Python
 }
 if Config.use_ocaml then
 	table.insert(Config.enabled_lsps, "ocamllsp")
@@ -28,7 +28,7 @@ end
 -- Utility Packages ===========================================================
 
 now(function()
-	add("nvim-lua/plenary.nvim")
+	add({ "https://github.com/nvim-lua/plenary.nvim" })
 end)
 
 -- Tree-sitter ================================================================
@@ -57,20 +57,13 @@ end)
 --   with `:TSInstall <language>`. Be sure to have necessary system dependencies
 --   (see MiniMax README section for software requirements).
 now_if_args(function()
+	local ts_update = function()
+		vim.cmd("TSUpdate")
+	end
+	Config.on_packchanged("nvim-treesitter", { "update" }, ts_update, ":TSUpdate")
 	add({
-		source = "nvim-treesitter/nvim-treesitter",
-		-- Update tree-sitter parser after plugin is updated
-		hooks = {
-			post_checkout = function()
-				vim.cmd("TSUpdate")
-			end,
-		},
-	})
-	add({
-		source = "nvim-treesitter/nvim-treesitter-textobjects",
-		-- Use `main` branch since `master` branch is frozen, yet still default
-		-- It is needed for compatibility with 'nvim-treesitter' `main` branch
-		checkout = "main",
+		"https://github.com/nvim-treesitter/nvim-treesitter",
+		"https://github.com/nvim-treesitter/nvim-treesitter-textobjects",
 	})
 
 	-- Define languages which will have parsers installed and auto enabled
@@ -130,7 +123,7 @@ end)
 --
 -- Add it now if file (and not 'mini.starter') is shown after startup.
 now_if_args(function()
-	add("neovim/nvim-lspconfig")
+	add({ "https://github.com/neovim/nvim-lspconfig" })
 
 	-- Use `:h vim.lsp.enable()` to automatically enable language server based on
 	-- the rules provided by 'nvim-lspconfig'.
@@ -148,7 +141,7 @@ end)
 -- The 'stevearc/conform.nvim' plugin is a good and maintained solution for easier
 -- formatting setup.
 now_if_args(function()
-	add("stevearc/conform.nvim")
+	add({ "https://github.com/stevearc/conform.nvim" })
 	-- See also:
 	-- - `:h Conform`
 	-- - `:h conform-options`
@@ -177,24 +170,24 @@ end)
 -- 'mini.snippets' is designed to work with it as seamlessly as possible.
 -- See `:h MiniSnippets.gen_loader.from_lang()`.
 later(function()
-	add("rafamadriz/friendly-snippets")
+	add({ "https://github.com/rafamadriz/friendly-snippets" })
 end)
 
 -- oncomouse plugins ==========================================================
 
 now_if_args(function()
-	add("oncomouse/markdown.nvim")
+	add({ "https://github.com/oncomouse/markdown.nvim" })
 	require("markdown").setup()
 end)
 
 -- Emacs-style motions in Neovim
 later(function()
-	add("tpope/vim-rsi")
+	add({ "https://github.com/tpope/vim-rsi" })
 end)
 
 -- My preferred indent indicating plugin
 later(function()
-	add({ source = "lukas-reineke/indent-blankline.nvim" })
+	add({ "https://github.com/lukas-reineke/indent-blankline.nvim" })
 	require("ibl").setup({
 		indent = {
 			tab_char = "▏",
@@ -220,13 +213,15 @@ end)
 
 -- Magit emulation for Neovim
 later(function()
-	add("sindrets/diffview.nvim")
-	add("NeogitOrg/neogit")
+	add({
+		"https://github.com/sindrets/diffview.nvim",
+		"https://github.com/NeogitOrg/neogit",
+	})
 end)
 
 -- My preferred theme
 now(function()
-	add("catppuccin/nvim")
+	add({ "https://github.com/catppuccin/nvim" })
 	vim.cmd("colorscheme catppuccin")
 end)
 
@@ -246,14 +241,12 @@ now_if_args(function()
 		"shfmt", -- bashls dependecy
 	}
 
-  add({
-    source = "mason-org/mason.nvim",
-    depends = {
-      "mason-org/mason-lspconfig.nvim",
-      "LittleEndianRoot/mason-conform",
-      "WhoIsSethDaniel/mason-tool-installer.nvim"
-    }
-  })
+	add({
+		"https://github.com/mason-org/mason.nvim",
+		"https://github.com/mason-org/mason-lspconfig.nvim",
+		"https://github.com/LittleEndianRoot/mason-conform",
+		"https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim",
+	})
 
 	require("mason").setup()
 	require("mason-lspconfig").setup()
@@ -277,18 +270,15 @@ now_if_args(function()
 end)
 
 now_if_headless(function()
-  if vim.uv.fs_stat(vim.fs.abspath("~/.config/eca/config.json")) then
-    add({
-      source = "editor-code-assistant/eca-nvim",
-      depends = {
-        "MunifTanjim/nui.nvim",      -- Required: UI framework
-        "nvim-lua/plenary.nvim",     -- Optional: Enhanced async operations
-      }
-    })
-    require("eca").setup({
-      log = {
-        display = "split",
-      },
-    })
-  end
+	if vim.uv.fs_stat(vim.fs.abspath("~/.config/eca/config.json")) then
+		add({
+			"https://github.com/editor-code-assistant/eca-nvim",
+			"https://github.com/MunifTanjim/nui.nvim", -- Required: UI framework
+		})
+		require("eca").setup({
+			log = {
+				display = "split",
+			},
+		})
+	end
 end)
