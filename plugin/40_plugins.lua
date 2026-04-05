@@ -248,8 +248,8 @@ end)
 -- You can use it like so:
 now_if_args(function()
 	local ensure_installed = {
-		"shellcheck", -- bashls dependecy
-		"shfmt", -- bashls dependecy
+		"shellcheck", -- bashls dependency
+		"shfmt", -- bashls dependency
 	}
 
 	add({
