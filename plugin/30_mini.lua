@@ -756,6 +756,9 @@ end)
 --   one of `<Leader>f` mappings defined in 'plugin/20_keymaps.lua'
 later(function()
 	require("mini.pick").setup()
+  MiniPick.registry.recent = require("mini.picker_recent")
+  MiniPick.registry.undotree = require("mini.picker_undo")
+  MiniPick.registry.icons = require("mini.picker_icons")
 end)
 
 -- Manage and expand snippets (templates for a frequently used text).
