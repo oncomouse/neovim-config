@@ -21,6 +21,7 @@ Config.enabled_lsps = {
 	"fish_lsp", -- Fish
 	"lua_ls", -- Lua
 	"ruff", -- Python
+	"tinymist", -- Typst
 }
 if Config.use_ocaml then
 	table.insert(Config.enabled_lsps, "ocamllsp")
@@ -71,21 +72,22 @@ now_if_args(function()
 	-- After changing this, restart Neovim once to install necessary parsers. Wait
 	-- for the installation to finish before opening a file for added language(s).
 	local languages = {
-		"javascript",
 		"bash",
 		"css",
 		"fish",
-		"json",
 		"html",
-		"ocaml",
+		"javascript",
+		"json",
 		"lua",
-		"vimdoc",
 		"markdown",
-		-- Add here more languages with which you want to use tree-sitter
-		-- To see available languages:
+		"ocaml",
+		"typst",
+		"vimdoc",
+		--   https://github.com/nvim-treesitter/nvim-treesitter/blob/main
 		-- - Execute `:=require('nvim-treesitter').get_available()`
 		-- - Visit 'SUPPORTED_LANGUAGES.md' file at
-		--   https://github.com/nvim-treesitter/nvim-treesitter/blob/main
+		-- Add here more languages with which you want to use tree-sitter
+		-- To see available languages:
 	}
 	local isnt_installed = function(lang)
 		return #vim.api.nvim_get_runtime_file("parser/" .. lang .. ".*", false) == 0
@@ -103,7 +105,7 @@ now_if_args(function()
 		end
 	end
 	local ts_start = function(ev)
-		vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+		-- vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
 		vim.wo[0][0].foldexpr = "v:lua.vim.treesitter.foldexpr()"
 		vim.wo[0][0].foldmethod = "expr"
 		vim.treesitter.start(ev.buf)
