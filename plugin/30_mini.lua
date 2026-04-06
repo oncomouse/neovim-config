@@ -116,6 +116,9 @@ now_if_args(function()
     'Makefile',
     'biome.json',
     'package.json',
+    'poetry.toml',
+    'Rakefile',
+    'rheo.toml',
   })
 
 	-- Restore latest cursor position on file open
