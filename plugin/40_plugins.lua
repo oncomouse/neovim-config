@@ -14,7 +14,7 @@ local later, now = Config.later, Config.now
 local now_if_args = Config.now_if_args
 local now_if_headless = #vim.api.nvim_list_uis() == 0 and Config.now or Config.later
 
-Config.use_ocaml = vim.fn.executable("opam") == 1
+Config.use_ocaml = vim.fn.executable("opam") == 1 and vim.env.USER ~= "root"
 Config.enabled_lsps = {
 	"bashls", -- Shell
 	"biome", -- JavaScript, TypeScript, CSS, JSON, HTML
