@@ -27,6 +27,10 @@
 local now, later = Config.now, Config.later
 local now_if_args = _G.Config.now_if_args
 
+-- Add custom mini helpers:
+now(function()
+	vim.pack.add({'https://github.com/oncomouse/mini-nvim-helpers'})
+end)
 
 -- Step one ===================================================================
 -- Enable 'miniwinter' color scheme. It comes with 'mini.nvim' and uses 'mini.hues'.
@@ -38,10 +42,6 @@ local now_if_args = _G.Config.now_if_args
 -- now(function()
 -- 	vim.cmd("colorscheme miniwinter")
 -- end)
-
-now(function()
-	vim.pack.add({'https://github.com/oncomouse/mini-nvim-helpers'})
-end)
 
 -- You can try these other 'mini.hues'-based color schemes (uncomment with `gcc`):
 -- now(function() vim.cmd('colorscheme minispring') end)
