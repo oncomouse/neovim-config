@@ -237,24 +237,6 @@ later(function()
 		n_lines = 50,
 		search_method = "cover", -- Only use next and last mappings to search
 	})
-	local spec_pair = require("mini.ai").gen_spec.pair
-	require("mini.helpers").configure_mini_module("ai", {
-		custom_textobjects = {
-			["*"] = spec_pair("*", "*", { type = "greedy" }), -- Grab all asterisks when selecting
-			["_"] = spec_pair("_", "_", { type = "greedy" }), -- Grab all underscores when selecting
-			["l"] = { "%b[]%b()", "^%[().-()%]%([^)]+%)$" }, -- Link targeting name
-			["L"] = { "%b[]%b()", "^%[.-%]%(()[^)]+()%)$" }, -- Link targeting href
-		},
-	}, {
-		filetype = "markdown",
-	})
-	require("mini.helpers").configure_mini_module("ai", {
-		custom_textobjects = {
-			["s"] = spec_pair("[[", "]]"),
-		},
-	}, {
-		filetype = "lua",
-	})
 end)
 
 -- Align text interactively. Example usage:
@@ -901,40 +883,6 @@ later(function()
 		search_method = "cover_or_next",
 	})
 end)
-require("mini.helpers").configure_mini_module("surround", {
-	custom_surroundings = {
-		["B"] = { -- Surround for bold
-			input = { "%*%*().-()%*%*" },
-			output = { left = "**", right = "**" },
-		},
-		["I"] = { -- Surround for italics
-			input = { "%*().-()%*" },
-			output = { left = "*", right = "*" },
-		},
-		["L"] = {
-			input = { "%[().-()%]%([^)]+%)" },
-			output = function()
-				local href = require("mini.surround").user_input("Href")
-				return {
-					left = "[",
-					right = "](" .. href .. ")",
-				}
-			end,
-		},
-	},
-}, {
-	filetype = "markdown",
-})
-require("mini.helpers").configure_mini_module("surround", {
-	custom_surroundings = {
-		s = {
-			input = { "%[%[().-()%]%]" },
-			output = { left = "[[", right = "]]" },
-		},
-	},
-}, {
-	filetype = "lua",
-})
 
 -- Highlight and remove trailspace. Temporarily stops highlighting in Insert mode
 -- to reduce noise when typing. Example usage:

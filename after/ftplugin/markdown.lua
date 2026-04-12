@@ -16,27 +16,39 @@
 -- See `:h mini.nvim-buffer-local-config` and `:h mini.nvim-disabling-recipes`.
 
 -- Enable spelling and wrap for window
-vim.cmd('setlocal spell wrap')
-
--- Fold with tree-sitter
-vim.cmd('setlocal foldmethod=expr foldexpr=v:lua.vim.treesitter.foldexpr()')
+vim.cmd("setlocal spell wrap")
 
 -- Disable built-in `gO` mapping in favor of 'mini.basics'
-vim.keymap.del('n', 'gO', { buffer = 0 })
+vim.keymap.del("n", "gO", { buffer = 0 })
+
+-- Set markdown-specific ai objects in 'mini.ai'
+local spec_pair = require("mini.ai").gen_spec.pair
+vim.bi.miniai_config = {
+	custom_textobjects = {
+		["*"] = spec_pair("*", "*", { type = "greedy" }), -- Grab all asterisks when selecting
+		["_"] = spec_pair("_", "_", { type = "greedy" }), -- Grab all underscores when selecting
+		["l"] = { "%b[]%b()", "^%[().-()%]%([^)]+%)$" }, -- Link targeting name
+		["L"] = { "%b[]%b()", "^%[.-%]%(()[^)]+()%)$" }, -- Link targeting href
+	},
+}
 
 -- Set markdown-specific surrounding in 'mini.surround'
 vim.b.minisurround_config = {
-  custom_surroundings = {
-    -- Markdown link. Common usage:
-    -- `saiwL` + [type/paste link] + <CR> - add link
-    -- `sdL` - delete link
-    -- `srLL` + [type/paste link] + <CR> - replace link
-    L = {
-      input = { '%[().-()%]%(.-%)' },
-      output = function()
-        local link = require('mini.surround').user_input('Link: ')
-        return { left = '[', right = '](' .. link .. ')' }
-      end,
-    },
-  },
+	custom_surroundings = {
+		B = { -- Surround for bold
+			input = { "%*%*().-()%*%*" },
+			output = { left = "**", right = "**" },
+		},
+		I = { -- Surround for italics
+			input = { "%*().-()%*" },
+			output = { left = "*", right = "*" },
+		},
+		L = {
+			input = { "%[().-()%]%(.-%)" },
+			output = function()
+				local link = require("mini.surround").user_input("Link: ")
+				return { left = "[", right = "](" .. link .. ")" }
+			end,
+		},
+	},
 }
