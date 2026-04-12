@@ -185,8 +185,53 @@ later(function()
 	add({ "https://github.com/rafamadriz/friendly-snippets" })
 end)
 
--- oncomouse plugins ==========================================================
+-- Mason Configuration ========================================================
 
+-- 'mason-org/mason.nvim' (a.k.a. "Mason") is a great tool (package manager) for
+-- installing external language servers, formatters, and linters. It provides
+-- a unified interface for installing, updating, and deleting such programs.
+--
+-- The caveat is that these programs will be set up to be mostly used inside Neovim.
+-- If you need them to work elsewhere, consider using other package managers.
+--
+-- You can use it like so:
+now_if_args(function()
+	local ensure_installed = {
+		"shellcheck", -- bashls dependency
+		"shfmt", -- bashls dependency
+	}
+
+	add({
+		"https://github.com/mason-org/mason.nvim",
+		"https://github.com/mason-org/mason-lspconfig.nvim",
+		"https://github.com/LittleEndianRoot/mason-conform",
+		"https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim",
+	})
+
+	require("mason").setup()
+	require("mason-lspconfig").setup()
+	-- Use autocmds to install required LSPs:
+	for _, lsp in pairs(Config.enabled_lsps) do
+		local mappings = require("mason-lspconfig").get_mappings()
+		if not vim.tbl_contains(require("mason-lspconfig").get_installed_servers(), lsp) then
+			Config.new_autocmd("FileType", vim.lsp.config[lsp].filetypes, function(ev)
+				if not vim.tbl_contains(require("mason-lspconfig").get_installed_servers(), lsp) then
+					vim.cmd("MasonInstall " .. mappings["lspconfig_to_package"][lsp])
+				end
+			end)
+		end
+	end
+	require("mason-conform").setup({
+		quiet_mode = true,
+	})
+	require("mason-tool-installer").setup({
+		ensure_installed = ensure_installed,
+	})
+end)
+
+-- Other Plugins ==========================================================
+
+-- My customizations for editing Markdown files
 now_if_args(function()
 	add({ "https://github.com/oncomouse/markdown.nvim" })
 	require("markdown").setup()
@@ -239,53 +284,10 @@ now(function()
 			name = "catppuccin",
 		},
 	})
-	vim.cmd("colorscheme catppuccin")
+	vim.cmd("colorscheme catppuccin-latte")
 end)
 
--- Mason Configuration ========================================================
-
--- 'mason-org/mason.nvim' (a.k.a. "Mason") is a great tool (package manager) for
--- installing external language servers, formatters, and linters. It provides
--- a unified interface for installing, updating, and deleting such programs.
---
--- The caveat is that these programs will be set up to be mostly used inside Neovim.
--- If you need them to work elsewhere, consider using other package managers.
---
--- You can use it like so:
-now_if_args(function()
-	local ensure_installed = {
-		"shellcheck", -- bashls dependency
-		"shfmt", -- bashls dependency
-	}
-
-	add({
-		"https://github.com/mason-org/mason.nvim",
-		"https://github.com/mason-org/mason-lspconfig.nvim",
-		"https://github.com/LittleEndianRoot/mason-conform",
-		"https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim",
-	})
-
-	require("mason").setup()
-	require("mason-lspconfig").setup()
-	-- Use autocmds to install required LSPs:
-	for _, lsp in pairs(Config.enabled_lsps) do
-		local mappings = require("mason-lspconfig").get_mappings()
-		if not vim.tbl_contains(require("mason-lspconfig").get_installed_servers(), lsp) then
-			Config.new_autocmd("FileType", vim.lsp.config[lsp].filetypes, function(ev)
-				if not vim.tbl_contains(require("mason-lspconfig").get_installed_servers(), lsp) then
-					vim.cmd("MasonInstall " .. mappings["lspconfig_to_package"][lsp])
-				end
-			end)
-		end
-	end
-	require("mason-conform").setup({
-		quiet_mode = true,
-	})
-	require("mason-tool-installer").setup({
-		ensure_installed = ensure_installed,
-	})
-end)
-
+-- ECA (Editor Code Assistant -- AI Pair Programming)
 now_if_headless(function()
 	if vim.uv.fs_stat(vim.fs.abspath("~/.config/eca/config.json")) then
 		add({
