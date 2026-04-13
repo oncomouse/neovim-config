@@ -23,24 +23,23 @@ vim.keymap.del("n", "gO", { buffer = 0 })
 
 -- Set markdown-specific ai objects in 'mini.ai'
 local spec_pair = require("mini.ai").gen_spec.pair
-vim.bi.miniai_config = {
+vim.b.miniai_config = {
 	custom_textobjects = {
 		["*"] = spec_pair("*", "*", { type = "greedy" }), -- Grab all asterisks when selecting
 		["_"] = spec_pair("_", "_", { type = "greedy" }), -- Grab all underscores when selecting
+		["`"] = spec_pair("`", "`", { type = "greedy" }), -- Grab all underscores when selecting
 		["l"] = { "%b[]%b()", "^%[().-()%]%([^)]+%)$" }, -- Link targeting name
 		["L"] = { "%b[]%b()", "^%[.-%]%(()[^)]+()%)$" }, -- Link targeting href
 	},
 }
-
--- Set markdown-specific surrounding in 'mini.surround'
 vim.b.minisurround_config = {
 	custom_surroundings = {
-		B = { -- Surround for bold
+		b = { -- Surround for bold
 			input = { "%*%*().-()%*%*" },
 			output = { left = "**", right = "**" },
 		},
-		I = { -- Surround for italics
-			input = { "%*().-()%*" },
+		i = { -- Surround for italics
+			input = { "%_().-()%_" },
 			output = { left = "*", right = "*" },
 		},
 		L = {
@@ -52,3 +51,6 @@ vim.b.minisurround_config = {
 		},
 	},
 }
+
+require("mini.pairs").map_buf(0, "i", "*", { action = "closeopen", pair = "**" })
+require("mini.pairs").map_buf(0, "i", "_", { action = "closeopen", pair = "__" })
