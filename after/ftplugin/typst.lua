@@ -23,35 +23,37 @@ vim.keymap.del("n", "gO", { buffer = 0 })
 
 -- Set markdown-specific ai objects in 'mini.ai'
 local spec_pair = require("mini.ai").gen_spec.pair
-vim.b.miniai_config = {
+vim.bi.miniai_config = {
 	custom_textobjects = {
 		["*"] = spec_pair("*", "*", { type = "greedy" }),
 		["_"] = spec_pair("_", "_", { type = "greedy" }),
+		["m"] = spec_pair("$", "$", { type = "greedy" }),
 		["`"] = spec_pair("`", "`", { type = "greedy" }),
-		["l"] = { "%b[]%b()", "^%[().-()%]%([^)]+%)$" }, -- Link targeting name
-		["L"] = { "%b[]%b()", "^%[.-%]%(()[^)]+()%)$" }, -- Link targeting href
 	},
 }
+
+-- Set markdown-specific surrounding in 'mini.surround'
 vim.b.minisurround_config = {
 	custom_surroundings = {
-		b = { -- Surround for bold
-			input = { "%*%*().-()%*%*" },
-			output = { left = "**", right = "**" },
+		m = {
+			input = { "%$().-()%$" },
+			output = { left = "$", right = "$" },
 		},
-		i = { -- Surround for italics
-			input = { "%_().-()%_" },
-			output = { left = "*", right = "*" },
+		M = {
+			input = { "%$().-()%$" },
+			output = { left = "$ ", right = " $" },
 		},
 		L = {
-			input = { "%[().-()%]%(.-%)" },
+			input = { "%(.-%)%[().-()%]" },
 			output = function()
 				local link = require("mini.surround").user_input("Link: ")
-				return { left = "[", right = "](" .. link .. ")" }
+				return { left = '#link("' .. link .. '")[', right = "]" }
 			end,
 		},
 	},
 }
 
-require("mini.pairs").map_buf(0, "i", "*", { action = "closeopen", pair = "**", neigh_pattern = "^..*." })
+require("mini.pairs").map_buf(0, "i", "$", { action = "closeopen", pair = "$$" })
 require("mini.pairs").map_buf(0, "i", "_", { action = "closeopen", pair = "__" })
+require("mini.pairs").map_buf(0, "i", "*", { action = "closeopen", pair = "**" })
 require("mini.pairs").map_buf(0, "i", "`", { action = "closeopen", pair = "``" })
