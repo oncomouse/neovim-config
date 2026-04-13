@@ -29,7 +29,7 @@ local now_if_args = _G.Config.now_if_args
 
 -- Add custom mini helpers:
 now(function()
-	vim.pack.add({'https://github.com/oncomouse/mini-nvim-helpers'})
+	vim.pack.add({ "https://github.com/oncomouse/mini-nvim-helpers" })
 end)
 
 -- Step one ===================================================================
@@ -112,14 +112,14 @@ now_if_args(function()
 	-- and sets their parent directory as a current directory.
 	-- This is helpful when simultaneously dealing with files from several projects.
 	MiniMisc.setup_auto_root({
-    '.git',
-    'Makefile',
-    'biome.json',
-    'package.json',
-    'poetry.toml',
-    'Rakefile',
-    'rheo.toml',
-  })
+		".git",
+		"Makefile",
+		"biome.json",
+		"package.json",
+		"poetry.toml",
+		"Rakefile",
+		"rheo.toml",
+	})
 
 	-- Restore latest cursor position on file open
 	MiniMisc.setup_restore_cursor()
@@ -406,26 +406,26 @@ end)
 -- It also works with snippet candidates provided by LSP server. Best experience
 -- when paired with 'mini.snippets' (which is set up in this file).
 later(function()
-  -- Customize post-processing of LSP responses for a better user experience.
-  -- Don't show 'Text' suggestions (usually noisy) and show snippets last.
-  local process_items_opts = { kind_priority = { Text = -1, Snippet = 99 } }
-  local process_items = function(items, base)
-    return MiniCompletion.default_process_items(items, base, process_items_opts)
-  end
-  require("mini.completion").setup({
-    lsp_completion = {
-      -- Without this config autocompletion is set up through `:h 'completefunc'`.
-      -- Although not needed, setting up through `:h 'omnifunc'` is cleaner
-      -- (sets up only when needed) and makes it possible to use `<C-u>`.
-      source_func = "omnifunc",
-      auto_setup = false,
-      process_items = process_items,
-    },
-    mappings = {
-      scroll_down = "",
-      scroll_up = "",
-    },
-  })
+	-- Customize post-processing of LSP responses for a better user experience.
+	-- Don't show 'Text' suggestions (usually noisy) and show snippets last.
+	local process_items_opts = { kind_priority = { Text = -1, Snippet = 99 } }
+	local process_items = function(items, base)
+		return MiniCompletion.default_process_items(items, base, process_items_opts)
+	end
+	require("mini.completion").setup({
+		lsp_completion = {
+			-- Without this config autocompletion is set up through `:h 'completefunc'`.
+			-- Although not needed, setting up through `:h 'omnifunc'` is cleaner
+			-- (sets up only when needed) and makes it possible to use `<C-u>`.
+			source_func = "omnifunc",
+			auto_setup = false,
+			process_items = process_items,
+		},
+		mappings = {
+			scroll_down = "",
+			scroll_up = "",
+		},
+	})
 
 	-- Set 'omnifunc' for LSP completion only when needed.
 	local on_attach = function(ev)
@@ -707,7 +707,22 @@ end)
 --   'mini.pairs' doesn't provide particularly smart behavior, like auto balancing
 later(function()
 	-- Create pairs not only in Insert, but also in Command line mode
-	require("mini.pairs").setup({ modes = { command = true } })
+	require("mini.pairs").setup({
+		mappings = {
+			-- Prevents the action if the cursor is just before any character or next to a "\".
+			["("] = { action = "open", pair = "()", neigh_pattern = "[^\\][%s%)%]%}]" },
+			["["] = { action = "open", pair = "[]", neigh_pattern = "[^\\][%s%)%]%}]" },
+			["{"] = { action = "open", pair = "{}", neigh_pattern = "[^\\][%s%)%]%}]" },
+			-- This is default (prevents the action if the cursor is just next to a "\").
+			[")"] = { action = "close", pair = "()", neigh_pattern = "[^\\]." },
+			["]"] = { action = "close", pair = "[]", neigh_pattern = "[^\\]." },
+			["}"] = { action = "close", pair = "{}", neigh_pattern = "[^\\]." },
+			-- Prevents the action if the cursor is just before or next to any character.
+			['"'] = { action = "closeopen", pair = '""', neigh_pattern = "[^%w][^%w]", register = { cr = false } },
+			["'"] = { action = "closeopen", pair = "''", neigh_pattern = "[^%w][^%w]", register = { cr = false } },
+			["`"] = { action = "closeopen", pair = "``", neigh_pattern = "[^%w][^%w]", register = { cr = false } },
+		},
+	})
 end)
 
 -- Pick anything with single window layout and fast matching. This is one of
@@ -741,9 +756,9 @@ end)
 --   one of `<Leader>f` mappings defined in 'plugin/20_keymaps.lua'
 later(function()
 	require("mini.pick").setup()
-  MiniPick.registry.recent = require("mini.picker_recent")
-  MiniPick.registry.undotree = require("mini.picker_undo")
-  MiniPick.registry.icons = require("mini.picker_icons")
+	MiniPick.registry.recent = require("mini.picker_recent")
+	MiniPick.registry.undotree = require("mini.picker_undo")
+	MiniPick.registry.icons = require("mini.picker_icons")
 end)
 
 -- Manage and expand snippets (templates for a frequently used text).
