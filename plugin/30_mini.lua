@@ -613,13 +613,13 @@ end)
 later(function()
 	require("mini.keymap").setup()
 	-- Navigate 'mini.completion' menu with `<Tab>` /  `<S-Tab>`
-	MiniKeymap.map_multistep("i", "<Tab>", { "pmenu_next" })
-	MiniKeymap.map_multistep("i", "<S-Tab>", { "pmenu_prev" })
+	MiniKeymap.map_multistep("i", "<Tab>", { "minisnippets_next", "minisnippets_expand", "increase_indent", "pmenu_next" })
+	MiniKeymap.map_multistep("i", "<S-Tab>", { "minisnippets_prev", "decrease_indent", "pmenu_prev" })
 	-- On `<CR>` try to accept current completion item, fall back to accounting
 	-- for pairs from 'mini.pairs'
 	MiniKeymap.map_multistep("i", "<CR>", { "pmenu_accept", "minipairs_cr" })
 	-- On `<BS>` just try to account for pairs from 'mini.pairs'
-	MiniKeymap.map_multistep("i", "<BS>", { "minipairs_bs" })
+	MiniKeymap.map_multistep("i", "<BS>", { "minipairs_bs", "hungry_bs" })
 end)
 
 -- Window with text overview. It is displayed on the right hand side. Can be used
