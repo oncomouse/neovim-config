@@ -52,6 +52,26 @@ vim.b.minisurround_config = {
 	},
 }
 
-require("mini.pairs").map_buf(0, "i", "*", { action = "closeopen", pair = "**", neigh_pattern = "^..*." })
+require("mini.pairs").map_buf(0, "i", "*", { action = "closeopen", pair = "**", neigh_pattern = "^[^*]." })
 require("mini.pairs").map_buf(0, "i", "_", { action = "closeopen", pair = "__" })
 require("mini.pairs").map_buf(0, "i", "`", { action = "closeopen", pair = "``" })
+
+-- Handle bulleted lists in addition to bold/italic:
+require("mini.keymap").map_multistep("i", "*", {
+	{
+		condition = function()
+			local current_line = vim.api.nvim_get_current_line()
+			local cursor_pos = vim.api.nvim_win_get_cursor(0)
+			return string.match(current_line:sub(1, cursor_pos[2]), "^%s*$")
+		end,
+		action = function()
+			return "* "
+		end,
+	},
+  {
+    condition = function() return true end,
+    action = function() return vim.fn.keytrans(MiniPairs.closeopen("**", "^[^*].")) end,
+  }
+}, {
+	buf = 0,
+})
