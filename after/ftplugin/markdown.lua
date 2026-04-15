@@ -19,10 +19,6 @@
 vim.pack.add({ "https://github.com/oncomouse/markdown.nvim" })
 require("markdown").setup()
 
--- Autolist
-vim.pack.add({ "https://github.com/gaoDean/autolist.nvim" })
-require("autolist").setup()
-
 -- Enable spelling and wrap for window
 vim.cmd("setlocal spell wrap")
 

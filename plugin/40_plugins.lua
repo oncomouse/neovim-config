@@ -231,6 +231,11 @@ end)
 
 -- Other Plugins ==========================================================
 
+-- Autonumber and manage lists in languages such as markdown (configured extensively in markdown)
+vim.pack.add({ "https://github.com/gaoDean/autolist.nvim" })
+require("autolist").setup()
+
+
 -- Emacs-style motions in Neovim
 later(function()
 	add({ "https://github.com/tpope/vim-rsi" })
