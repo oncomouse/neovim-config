@@ -231,12 +231,6 @@ end)
 
 -- Other Plugins ==========================================================
 
--- My customizations for editing Markdown files
-now_if_args(function()
-	add({ "https://github.com/oncomouse/markdown.nvim" })
-	require("markdown").setup()
-end)
-
 -- Emacs-style motions in Neovim
 later(function()
 	add({ "https://github.com/tpope/vim-rsi" })
