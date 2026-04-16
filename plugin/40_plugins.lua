@@ -85,7 +85,7 @@ now_if_args(function()
 		"json",
 		"lua",
 		"markdown",
-		"markdown-inline",
+		"markdown_inline",
 		"ocaml",
 		"typst",
 		"vimdoc",
