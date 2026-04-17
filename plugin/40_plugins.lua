@@ -66,6 +66,7 @@ now_if_args(function()
 	add({
 		"https://github.com/nvim-treesitter/nvim-treesitter",
 		"https://github.com/nvim-treesitter/nvim-treesitter-textobjects",
+    "https://github.com/RRethy/nvim-treesitter-endwise",
 	})
 
 	-- Define languages which will have parsers installed and auto enabled
