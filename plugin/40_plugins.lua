@@ -75,6 +75,7 @@ now_if_args(function()
 	local languages = {
 		"bash",
 		"css",
+    "diff",
 		"fish",
 		"git_config",
 		"git_rebase",
