@@ -233,9 +233,21 @@ end)
 
 -- Other Plugins ==========================================================
 
+-- Load markdown helper:
+vim.pack.add({ "https://github.com/oncomouse/markdown.nvim" })
+
 -- Autonumber and manage lists in languages such as markdown (configured extensively in markdown)
 vim.pack.add({ "https://github.com/gaoDean/autolist.nvim" })
-require("autolist").setup()
+require("autolist").setup({
+  lists = {
+    typst = {
+    "[-+]", -- - + *
+    "%d+[.)]+", -- 1. 2. 3.
+    "%a[.)]+", -- a) b) c)
+    "%u*[.)]+", -- I. II. III.
+    }
+  }
+})
 
 
 -- Emacs-style motions in Neovim

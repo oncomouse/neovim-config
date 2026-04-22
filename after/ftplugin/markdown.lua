@@ -15,10 +15,6 @@
 -- This is also a good place to set buffer-local 'mini.nvim' variables.
 -- See `:h mini.nvim-buffer-local-config` and `:h mini.nvim-disabling-recipes`.
 
--- Load markdown helper:
-vim.pack.add({ "https://github.com/oncomouse/markdown.nvim" })
-require("markdown").setup()
-
 -- Enable spelling and wrap for window
 vim.cmd("setlocal spell wrap")
 
