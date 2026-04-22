@@ -18,9 +18,6 @@
 -- Enable spelling and wrap for window
 vim.cmd("setlocal spell wrap")
 
--- Disable built-in `gO` mapping in favor of 'mini.basics'
-vim.keymap.del("n", "gO", { buffer = 0 })
-
 -- Set markdown-specific ai objects in 'mini.ai'
 local spec_pair = require("mini.ai").gen_spec.pair
 vim.bi.miniai_config = {
