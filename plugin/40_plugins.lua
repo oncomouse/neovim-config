@@ -66,7 +66,7 @@ now_if_args(function()
 	add({
 		"https://github.com/nvim-treesitter/nvim-treesitter",
 		"https://github.com/nvim-treesitter/nvim-treesitter-textobjects",
-    "https://github.com/RRethy/nvim-treesitter-endwise",
+		"https://github.com/RRethy/nvim-treesitter-endwise",
 	})
 
 	-- Define languages which will have parsers installed and auto enabled
@@ -75,7 +75,7 @@ now_if_args(function()
 	local languages = {
 		"bash",
 		"css",
-    "diff",
+		"diff",
 		"fish",
 		"git_config",
 		"git_rebase",
@@ -184,7 +184,10 @@ end)
 -- 'mini.snippets' is designed to work with it as seamlessly as possible.
 -- See `:h MiniSnippets.gen_loader.from_lang()`.
 later(function()
-	add({ "https://github.com/rafamadriz/friendly-snippets" })
+	add({
+		"https://github.com/rafamadriz/friendly-snippets",
+		"https://github.com/abhinandh-s/typst-snippets",
+	})
 end)
 
 -- Mason Configuration ========================================================
@@ -239,16 +242,15 @@ vim.pack.add({ "https://github.com/oncomouse/markdown.nvim" })
 -- Autonumber and manage lists in languages such as markdown (configured extensively in markdown)
 vim.pack.add({ "https://github.com/gaoDean/autolist.nvim" })
 require("autolist").setup({
-  lists = {
-    typst = {
-    "[-+]", -- - + *
-    "%d+[.)]+", -- 1. 2. 3.
-    "%a[.)]+", -- a) b) c)
-    "%u*[.)]+", -- I. II. III.
-    }
-  }
+	lists = {
+		typst = {
+			"[-+]", -- - + *
+			"%d+[.)]+", -- 1. 2. 3.
+			"%a[.)]+", -- a) b) c)
+			"%u*[.)]+", -- I. II. III.
+		},
+	},
 })
-
 
 -- Emacs-style motions in Neovim
 later(function()
