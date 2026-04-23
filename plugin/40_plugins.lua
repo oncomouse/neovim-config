@@ -26,6 +26,10 @@ Config.enabled_lsps = {
 if Config.use_ocaml then
 	table.insert(Config.enabled_lsps, "ocamllsp")
 end
+Config.mason_tools = {
+	"shellcheck", -- bashls dependency
+	"shfmt", -- bashls dependency
+}
 
 -- Utility Packages ===========================================================
 
@@ -201,11 +205,6 @@ end)
 --
 -- You can use it like so:
 now_if_args(function()
-	local ensure_installed = {
-		"shellcheck", -- bashls dependency
-		"shfmt", -- bashls dependency
-	}
-
 	add({
 		"https://github.com/mason-org/mason.nvim",
 		"https://github.com/mason-org/mason-lspconfig.nvim",
@@ -230,7 +229,7 @@ now_if_args(function()
 		quiet_mode = true,
 	})
 	require("mason-tool-installer").setup({
-		ensure_installed = ensure_installed,
+		ensure_installed = Config.mason_tools,
 	})
 end)
 
