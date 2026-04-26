@@ -325,9 +325,9 @@ later(function()
     include_pagenumbers = true,
     mappings = {
       {
-        mode = "i",
-        lhs = "<C-c>@",
-        command = "insert.citation",
+        "i",
+        "<C-c>@",
+        "insert.citation",
       },
     },
   })
