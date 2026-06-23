@@ -21,6 +21,7 @@ Config.enabled_lsps = {
 	"fish_lsp", -- Fish
 	"lua_ls", -- Lua
 	"ruff", -- Python
+  "svelte", -- Svelte
 	"tinymist", -- Typst
 }
 if Config.use_ocaml then
@@ -93,6 +94,7 @@ now_if_args(function()
 		"markdown",
 		"markdown_inline",
 		"ocaml",
+    "svelte",
 		"typst",
 		"vimdoc",
 		--   https://github.com/nvim-treesitter/nvim-treesitter/blob/main
