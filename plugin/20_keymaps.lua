@@ -10,14 +10,14 @@
 
 -- An example helper to create a Normal mode mapping
 local nmap = function(lhs, rhs, desc)
-  -- See `:h vim.keymap.set()`
-  vim.keymap.set('n', lhs, rhs, { desc = desc })
+	-- See `:h vim.keymap.set()`
+	vim.keymap.set("n", lhs, rhs, { desc = desc })
 end
 
 -- Paste linewise before/after current line
 -- Usage: `yiw` to yank a word and `]p` to put it on the next line.
-nmap('[p', '<Cmd>exe "put! " . v:register<CR>', 'Paste Above')
-nmap(']p', '<Cmd>exe "put "  . v:register<CR>', 'Paste Below')
+nmap("[p", '<Cmd>exe "put! " . v:register<CR>', "Paste Above")
+nmap("]p", '<Cmd>exe "put "  . v:register<CR>', "Paste Below")
 
 -- Many general mappings are created by 'mini.basics'. See 'plugin/30_mini.lua'
 
@@ -266,5 +266,20 @@ nmap("<C-x><C-f>", "<cmd>Pick files<CR>")
 -- Prefered menu bin
 nmap_leader("bK", "<Cmd>lua MiniBufremove.delete(0, true)<CR>", "Kill!")
 nmap_leader("bk", "<Cmd>lua MiniBufremove.delete()<CR>", "Kill")
+
+-- Quick buffer switching by position (works great with mini.tabbar)
+local function buffer_jump(bn)
+  return function()
+    local buffers_output = vim.split(vim.api.nvim_exec2('buffers', { output = true }).output, '\n')
+    if #buffers_output >= bn then
+      local buf_id = tonumber(buffers_output[bn]:match('^%s*%d+'))
+      vim.api.nvim_set_current_buf(buf_id)
+    end
+  end
+end
+for _, x in pairs(vim.fn.range(1, 9)) do
+  nmap("<M-" .. x .. ">", buffer_jump(x))
+end
+nmap("<M-0>", buffer_jump(10))
 
 -- stylua: ignore end
