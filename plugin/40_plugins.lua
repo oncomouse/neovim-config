@@ -18,7 +18,9 @@ Config.use_ocaml = vim.fn.executable("opam") == 1 and vim.env.USER ~= "root"
 Config.enabled_lsps = {
 	"bashls", -- Shell
 	"biome", -- JavaScript, TypeScript, CSS, JSON, HTML
+  "cssls", -- CSS
 	"fish_lsp", -- Fish
+  "html", -- HTML
 	"lua_ls", -- Lua
 	"ruff", -- Python
   "svelte", -- Svelte
