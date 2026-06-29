@@ -18,12 +18,12 @@ Config.use_ocaml = vim.fn.executable("opam") == 1 and vim.env.USER ~= "root"
 Config.enabled_lsps = {
 	"bashls", -- Shell
 	"biome", -- JavaScript, TypeScript, CSS, JSON, HTML
-  "cssls", -- CSS
+	"cssls", -- CSS
 	"fish_lsp", -- Fish
-  "html", -- HTML
+	"html", -- HTML
 	"lua_ls", -- Lua
 	"ruff", -- Python
-  "svelte", -- Svelte
+	"svelte", -- Svelte
 	"tinymist", -- Typst
 }
 if Config.use_ocaml then
@@ -96,7 +96,7 @@ now_if_args(function()
 		"markdown",
 		"markdown_inline",
 		"ocaml",
-    "svelte",
+		"svelte",
 		"typst",
 		"vimdoc",
 		--   https://github.com/nvim-treesitter/nvim-treesitter/blob/main
@@ -178,6 +178,16 @@ now_if_args(function()
 		formatters_by_ft = {
 			ocaml = { Config.use_ocaml and "ocamlformat" or nil },
 			lua = { "stylua" },
+			css = {
+				filter = function(client)
+					return client.name == "biome"
+				end,
+			},
+			html = {
+				filter = function(client)
+					return client.name == "biome"
+				end,
+			},
 		},
 	})
 end)
@@ -321,18 +331,18 @@ now_if_headless(function()
 end)
 
 later(function()
-  vim.pack.add({ "https://github.com/oncomouse/nvim-ref" })
-  require("nvim-ref").setup({
-    bibfiles = {
-      "~/Reading/library.bib",
-    },
-    include_pagenumbers = true,
-    mappings = {
-      {
-        "i",
-        "<C-c>@",
-        "insert.citation",
-      },
-    },
-  })
+	vim.pack.add({ "https://github.com/oncomouse/nvim-ref" })
+	require("nvim-ref").setup({
+		bibfiles = {
+			"~/Reading/library.bib",
+		},
+		include_pagenumbers = true,
+		mappings = {
+			{
+				"i",
+				"<C-c>@",
+				"insert.citation",
+			},
+		},
+	})
 end)
