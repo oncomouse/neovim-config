@@ -369,21 +369,6 @@ now(function()
 	vim.cmd("colorscheme catppuccin-latte")
 end)
 
--- ECA (Editor Code Assistant -- AI Pair Programming)
-now_if_headless(function()
-	if vim.uv.fs_stat(vim.fs.abspath("~/.config/eca/config.json")) then
-		add({
-			"https://github.com/editor-code-assistant/eca-nvim",
-			"https://github.com/MunifTanjim/nui.nvim", -- Required: UI framework
-		})
-		require("eca").setup({
-			log = {
-				display = "split",
-			},
-		})
-	end
-end)
-
 later(function()
 	vim.pack.add({ "https://github.com/oncomouse/nvim-ref" })
 	require("nvim-ref").setup({
