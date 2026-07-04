@@ -15,23 +15,77 @@ local now_if_args = Config.now_if_args
 local now_if_headless = #vim.api.nvim_list_uis() == 0 and Config.now or Config.later
 
 Config.use_ocaml = vim.fn.executable("opam") == 1 and vim.env.USER ~= "root"
-Config.enabled_lsps = {
-	"bashls", -- Shell
-	"biome", -- JavaScript, TypeScript, CSS, JSON, HTML
-	"cssls", -- CSS
-	"fish_lsp", -- Fish
-	"html", -- HTML
-	"lua_ls", -- Lua
-	"ruff", -- Python
-	"svelte", -- Svelte
-	"tinymist", -- Typst
-}
-if Config.use_ocaml then
-	table.insert(Config.enabled_lsps, "ocamllsp")
-end
-Config.mason_tools = {
-	"shellcheck", -- bashls dependency
-	"shfmt", -- bashls dependency
+-- Unified external tooling definition. Add a table with the ft of a treesitter
+-- parser you'd like to use. Add lsps in <ft>.lsp table, using their lsp-config
+-- name. Add tools you want mason to install using <ft>.mason as a table. You
+-- can set type = "formatter"|"linter"|"dap" to tell the system which kind of
+-- tool each is, so they are installed correctly.
+Config.languages = {
+	bash = {
+		mason = { -- These are required for bash-lsp
+			shellcheck = {},
+			shfmt = {},
+		},
+	},
+	css = {
+		lsp = {
+			"cssls",
+			"biome",
+		},
+	},
+	diff = {},
+	fish = {
+		lsp = {
+			"fish_lsp",
+		},
+	},
+	git_config = {},
+	git_rebase = {},
+	gitattributes = {},
+	gitcommit = {},
+	gitignore = {},
+	html = {
+		lsp = {
+			"biome",
+			"html",
+		},
+	},
+	javascript = {},
+	json = {},
+	lua = {
+		mason = {
+			stylua = { type = "formatter" },
+		},
+		lsp = {
+			"lua_ls",
+		},
+	},
+	markdown = {},
+	markdown_inline = {},
+	ocaml = {
+		lsp = {
+			"ocamllsp",
+		},
+		mason = {
+			ocamlformat = { type = "formatter" },
+		},
+	},
+	python = {
+		lsp = {
+			"ruff",
+		},
+	},
+	svelte = {
+		lsp = {
+			"svelte",
+		},
+	},
+	typst = {
+		lsp = {
+			"tinymist",
+		},
+	},
+	vimdoc = {},
 }
 
 -- Utility Packages ===========================================================
@@ -79,32 +133,7 @@ now_if_args(function()
 	-- Define languages which will have parsers installed and auto enabled
 	-- After changing this, restart Neovim once to install necessary parsers. Wait
 	-- for the installation to finish before opening a file for added language(s).
-	local languages = {
-		"bash",
-		"css",
-		"diff",
-		"fish",
-		"git_config",
-		"git_rebase",
-		"gitattributes",
-		"gitcommit",
-		"gitignore",
-		"html",
-		"javascript",
-		"json",
-		"lua",
-		"markdown",
-		"markdown_inline",
-		"ocaml",
-		"svelte",
-		"typst",
-		"vimdoc",
-		--   https://github.com/nvim-treesitter/nvim-treesitter/blob/main
-		-- - Execute `:=require('nvim-treesitter').get_available()`
-		-- - Visit 'SUPPORTED_LANGUAGES.md' file at
-		-- Add here more languages with which you want to use tree-sitter
-		-- To see available languages:
-	}
+	local languages = vim.tbl_keys(Config.languages)
 	local isnt_installed = function(lang)
 		return #vim.api.nvim_get_runtime_file("parser/" .. lang .. ".*", false) == 0
 	end
@@ -168,27 +197,26 @@ now_if_args(function()
 	-- - `:h Conform`
 	-- - `:h conform-options`
 	-- - `:h conform-formatters`
+
+  -- Gather any formatters to be installed by mason:
+	local formatters = {}
+	for _, ft in pairs(vim.tbl_keys(Config.languages)) do
+		if Config.languages[ft].mason then
+			formatters[ft] = {}
+			for _, tool in pairs(vim.tbl_keys(Config.languages[ft].mason)) do
+				if Config.languages[ft].mason[tool].type == "formatter" then
+					table.insert(formatters[ft], tool)
+				end
+			end
+		end
+	end
+
 	require("conform").setup({
 		default_format_opts = {
 			-- Allow formatting from LSP server if no dedicated formatter is available
 			lsp_format = "fallback",
 		},
-		-- Map of filetype to formatters
-		-- Make sure that necessary CLI tool is available
-		formatters_by_ft = {
-			ocaml = { Config.use_ocaml and "ocamlformat" or nil },
-			lua = { "stylua" },
-			css = {
-				filter = function(client)
-					return client.name == "biome"
-				end,
-			},
-			html = {
-				filter = function(client)
-					return client.name == "biome"
-				end,
-			},
-		},
+		formatters_by_ft = formatters,
 	})
 end)
 
@@ -222,12 +250,33 @@ now_if_args(function()
 	add({
 		"https://github.com/mason-org/mason.nvim",
 		"https://github.com/mason-org/mason-lspconfig.nvim",
-		"https://github.com/LittleEndianRoot/mason-conform",
-		"https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim",
 	})
 
 	require("mason").setup()
 	require("mason-lspconfig").setup()
+
+  -- Build datastructures we need to configure mason-lspconfig and install any other tools:
+	Config.enabled_lsps = {}
+	Config.mason_tools = {}
+	for _, language in pairs(vim.tbl_keys(Config.languages)) do
+		if Config.languages[language].lsp then
+			for _, lsp in pairs(Config.languages[language].lsp) do
+				table.insert(Config.enabled_lsps, lsp)
+			end
+		end
+		if Config.languages[language].mason then
+			for _, tool in pairs(vim.tbl_keys(Config.languages[language].mason)) do
+				if Config.mason_tools[tool] then
+					table.insert(Config.mason_tools[tool].filetypes, language)
+				else
+					Config.mason_tools[tool] = {
+						filetypes = { language },
+					}
+				end
+			end
+		end
+	end
+
 	-- Use autocmds to install required LSPs:
 	for _, lsp in pairs(Config.enabled_lsps) do
 		local mappings = require("mason-lspconfig").get_mappings()
@@ -239,12 +288,17 @@ now_if_args(function()
 			end)
 		end
 	end
-	require("mason-conform").setup({
-		quiet_mode = true,
-	})
-	require("mason-tool-installer").setup({
-		ensure_installed = Config.mason_tools,
-	})
+
+	-- Use autocmds to install required tools:
+	for _, tool in pairs(vim.tbl_keys(Config.mason_tools)) do
+		if not require("mason-registry").is_installed(tool) then
+			Config.new_autocmd("Filetype", Config.mason_tools[tool].filetypes, function(_)
+				if not require("mason-registry").is_installed(tool) then
+					vim.cmd("MasonInstall " .. tool)
+				end
+			end)
+		end
+	end
 end)
 
 -- Other Plugins ==========================================================
