@@ -12,9 +12,7 @@
 local add = vim.pack.add
 local later, now = Config.later, Config.now
 local now_if_args = Config.now_if_args
-local now_if_headless = #vim.api.nvim_list_uis() == 0 and Config.now or Config.later
 
-Config.use_ocaml = vim.fn.executable("opam") == 1 and vim.env.USER ~= "root"
 -- Unified external tooling definition. Add a table with the ft of a treesitter
 -- parser you'd like to use. Add lsps in <ft>.lsp table, using their lsp-config
 -- name. Add tools you want mason to install using <ft>.mason as a table. You
@@ -87,6 +85,9 @@ Config.languages = {
 	},
 	vimdoc = {},
 }
+
+-- Cache language keys for reuse across closures
+Config._language_keys = vim.tbl_keys(Config.languages)
 
 -- Utility Packages ===========================================================
 
@@ -200,13 +201,16 @@ now_if_args(function()
 
   -- Gather any formatters to be installed by mason:
 	local formatters = {}
-	for _, ft in pairs(vim.tbl_keys(Config.languages)) do
+	for _, ft in ipairs(Config._language_keys) do
 		if Config.languages[ft].mason then
-			formatters[ft] = {}
+			local ft_formatters = {}
 			for _, tool in pairs(vim.tbl_keys(Config.languages[ft].mason)) do
 				if Config.languages[ft].mason[tool].type == "formatter" then
-					table.insert(formatters[ft], tool)
+					table.insert(ft_formatters, tool)
 				end
+			end
+			if #ft_formatters > 0 then
+				formatters[ft] = ft_formatters
 			end
 		end
 	end
@@ -258,10 +262,14 @@ now_if_args(function()
   -- Build datastructures we need to configure mason-lspconfig and install any other tools:
 	Config.enabled_lsps = {}
 	Config.mason_tools = {}
-	for _, language in pairs(vim.tbl_keys(Config.languages)) do
+	local seen_lsp = {}
+	for _, language in ipairs(Config._language_keys) do
 		if Config.languages[language].lsp then
-			for _, lsp in pairs(Config.languages[language].lsp) do
-				table.insert(Config.enabled_lsps, lsp)
+			for _, lsp in ipairs(Config.languages[language].lsp) do
+				if not seen_lsp[lsp] then
+					seen_lsp[lsp] = true
+					table.insert(Config.enabled_lsps, lsp)
+				end
 			end
 		end
 		if Config.languages[language].mason then
@@ -278,26 +286,34 @@ now_if_args(function()
 	end
 
 	-- Use autocmds to install required LSPs:
-	for _, lsp in pairs(Config.enabled_lsps) do
+	for _, lsp in ipairs(Config.enabled_lsps) do
 		local mappings = require("mason-lspconfig").get_mappings()
-		if not vim.tbl_contains(require("mason-lspconfig").get_installed_servers(), lsp) then
-			Config.new_autocmd("FileType", vim.lsp.config[lsp].filetypes, function(ev)
+		vim.api.nvim_create_autocmd("FileType", {
+			group = vim.api.nvim_create_augroup("mason-lsp-install", {}),
+			pattern = vim.lsp.config[lsp].filetypes,
+			once = true,
+			callback = function()
 				if not vim.tbl_contains(require("mason-lspconfig").get_installed_servers(), lsp) then
 					vim.cmd("MasonInstall " .. mappings["lspconfig_to_package"][lsp])
 				end
-			end)
-		end
+			end,
+			desc = "Install " .. lsp,
+		})
 	end
 
 	-- Use autocmds to install required tools:
 	for _, tool in pairs(vim.tbl_keys(Config.mason_tools)) do
-		if not require("mason-registry").is_installed(tool) then
-			Config.new_autocmd("Filetype", Config.mason_tools[tool].filetypes, function(_)
+		vim.api.nvim_create_autocmd("FileType", {
+			group = vim.api.nvim_create_augroup("mason-tool-install", {}),
+			pattern = Config.mason_tools[tool].filetypes,
+			once = true,
+			callback = function()
 				if not require("mason-registry").is_installed(tool) then
 					vim.cmd("MasonInstall " .. tool)
 				end
-			end)
-		end
+			end,
+			desc = "Install " .. tool,
+		})
 	end
 end)
 
