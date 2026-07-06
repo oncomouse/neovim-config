@@ -199,7 +199,7 @@ now_if_args(function()
 	-- - `:h conform-options`
 	-- - `:h conform-formatters`
 
-  -- Gather any formatters to be installed by mason:
+	-- Gather any formatters to be installed by mason:
 	local formatters = {}
 	for _, ft in ipairs(Config._language_keys) do
 		if Config.languages[ft].mason then
@@ -214,6 +214,55 @@ now_if_args(function()
 			end
 		end
 	end
+
+	local function is_biome_project(bufnr)
+		bufnr = bufnr or 0
+		if vim.b[bufnr].biome_buffer then
+			return vim.b[bufnr].biome_buffer
+		end
+		local root_markers = {
+			"package-lock.json",
+			"yarn.lock",
+			"pnpm-lock.yaml",
+			"bun.lockb",
+			"bun.lock",
+			"deno.lock",
+		}
+		-- Set a lower priority to avoid spawning multiple servers on monorepos
+		local biome_config_files = { "biome.json", "biome.jsonc" }
+		-- Give the root markers equal priority by wrapping them in a table
+		root_markers = vim.fn.has("nvim-0.11.3") == 1 and { root_markers, biome_config_files, { ".git" } }
+			or vim.list_extend(root_markers, vim.list_extend(biome_config_files, { ".git" }))
+
+		-- We fallback to the current working directory if no project root is found
+		local project_root = vim.fs.root(bufnr, root_markers) or vim.fn.getcwd()
+		local filename = vim.api.nvim_buf_get_name(bufnr)
+		local is_buffer_using_biome = vim.fs.find(biome_config_files, {
+			path = filename,
+			type = "file",
+			limit = 1,
+			upward = true,
+			stop = vim.fs.dirname(project_root),
+		})[1]
+		vim.b.biome_buffer = is_buffer_using_biome
+		return is_buffer_using_biome ~= nil
+	end
+
+	-- Customize the operation of lsp formatters:
+	Config.conform_options = {
+		filter = function(client)
+			if not vim.b.lsp_formatters then
+				vim.b.lsp_formatters = vim.tbl_map(function(c)
+					return c.name
+				end, require("conform.lsp_format").get_format_clients({ bufnr = 0 }))
+				-- vim.b.formatters = require("conform").list_formatters_for_buffer()
+			end
+			if vim.tbl_contains(vim.b.lsp_formatters, "biome") and is_biome_project(0) and client.name ~= "biome" then
+				return false
+			end
+			return true
+		end,
+	}
 
 	require("conform").setup({
 		default_format_opts = {
@@ -259,7 +308,7 @@ now_if_args(function()
 	require("mason").setup()
 	require("mason-lspconfig").setup()
 
-  -- Build datastructures we need to configure mason-lspconfig and install any other tools:
+	-- Build datastructures we need to configure mason-lspconfig and install any other tools:
 	Config.enabled_lsps = {}
 	Config.mason_tools = {}
 	local seen_lsp = {}
