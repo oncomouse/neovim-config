@@ -68,7 +68,11 @@ Config.now(function()
 	end
 
 	Config.org_grep = function()
-		require("mini.pick").builtin.grep_live({}, { source = { cwd = ORG_ROOT } })
+		require("mini.pick").builtin.grep_live({
+			globs = vim.tbl_map(function(d)
+				return string.match(d, "%*") and d or "*" .. vim.fs.basename(d) .. "*"
+			end, require("orgmode.config").opts.org_agenda_files),
+		}, { source = { cwd = ORG_ROOT } })
 	end
 
 	require("mini.pick").registry.org_headlines = Config.org_headlines
