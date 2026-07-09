@@ -11,8 +11,18 @@ Config.now(function()
 	end
 
 	require("orgmode").setup({
-		org_agenda_files = ORG_ROOT .. "**/*",
+		org_agenda_files = {
+			ORG_ROOT .. "todo.org",
+			ORG_ROOT .. "inbox.org",
+			ORG_ROOT .. "appointments.org",
+		},
 		org_default_notes_file = ORG_ROOT .. "inbox.org",
+		win_split_mode = function(name)
+			local bufnr = vim.api.nvim_create_buf(false, false)
+			--- Setting buffer name is required
+			vim.api.nvim_buf_set_name(bufnr, name)
+			vim.api.nvim_win_set_buf(0, bufnr)
+		end,
 	})
 	require("org-roam").setup({
 		directory = ORG_ROOT .. "org-roam",
