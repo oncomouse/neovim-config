@@ -71,7 +71,7 @@ Config.now(function()
 		require("mini.pick").builtin.grep_live({}, { source = { cwd = ORG_ROOT } })
 	end
 
-	require('mini.pick').registry.org_headlines = Config.org_headlines
-	require('mini.pick').registry.org_grep = Config.org_grep
-	require('mini.pick').registry.org_files = Config.org_files
+	require("mini.pick").registry.org_headlines = Config.org_headlines
+	require("mini.pick").registry.org_grep = Config.org_grep
+	require("mini.pick").registry.org_files = Config.org_files
 end)
