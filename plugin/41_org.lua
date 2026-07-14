@@ -17,6 +17,7 @@ Config.now(function()
 			ORG_ROOT .. "appointments.org",
 		},
 		org_default_notes_file = ORG_ROOT .. "inbox.org",
+    org_adapt_indentation = false,
 		win_split_mode = function(name)
 			local bufnr = vim.api.nvim_create_buf(false, false)
 			--- Setting buffer name is required
