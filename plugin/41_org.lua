@@ -17,13 +17,20 @@ Config.now(function()
 			ORG_ROOT .. "appointments.org",
 		},
 		org_default_notes_file = ORG_ROOT .. "inbox.org",
-    org_adapt_indentation = false,
+		org_adapt_indentation = false,
 		win_split_mode = function(name)
 			local bufnr = vim.api.nvim_create_buf(false, false)
 			--- Setting buffer name is required
 			vim.api.nvim_buf_set_name(bufnr, name)
 			vim.api.nvim_win_set_buf(0, bufnr)
 		end,
+		mappings = {
+			capture = {
+				org_capture_finalize = "<c-c><c-c>",
+				org_capture_refile = "<c-c><c-w>",
+				org_capture_kill = "<c-c><c-k>",
+			},
+		},
 	})
 	require("org-roam").setup({
 		directory = ORG_ROOT .. "org-roam",
