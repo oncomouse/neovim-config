@@ -24,6 +24,9 @@ Config.languages = {
 			shellcheck = {},
 			shfmt = {},
 		},
+		lsp = {
+			"bashls",
+		},
 	},
 	css = {
 		lsp = {
