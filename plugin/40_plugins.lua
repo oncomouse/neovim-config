@@ -79,7 +79,7 @@ Config.languages = {
 	python = {
 		lsp = {
 			"ruff",
-      "zuban",
+			"zuban",
 		},
 	},
 	svelte = {
@@ -337,10 +337,10 @@ now_if_args(function()
 						filetypes = {},
 					}
 				end
-        table.insert(Config.mason_tools[tool].filetypes, language)
-        if language == "bash" then -- Automatically install tools for sh if bash is used
-          table.insert(Config.mason_tools[tool].filetypes, "sh")
-        end
+				table.insert(Config.mason_tools[tool].filetypes, language)
+				if language == "bash" then -- Automatically install tools for sh if bash is used
+					table.insert(Config.mason_tools[tool].filetypes, "sh")
+				end
 			end
 		end
 	end
@@ -364,7 +364,7 @@ now_if_args(function()
 	-- Use autocmds to install required tools:
 	for _, tool in pairs(vim.tbl_keys(Config.mason_tools)) do
 		vim.api.nvim_create_autocmd("FileType", {
-			group = vim.api.nvim_create_augroup("mason-tool-install", { clear = false}),
+			group = vim.api.nvim_create_augroup("mason-tool-install", { clear = false }),
 			pattern = Config.mason_tools[tool].filetypes,
 			once = true,
 			callback = function()
