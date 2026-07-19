@@ -327,13 +327,15 @@ now_if_args(function()
 		end
 		if Config.languages[language].mason then
 			for _, tool in pairs(vim.tbl_keys(Config.languages[language].mason)) do
-				if Config.mason_tools[tool] then
-					table.insert(Config.mason_tools[tool].filetypes, language)
-				else
+				if not Config.mason_tools[tool] then
 					Config.mason_tools[tool] = {
-						filetypes = { language },
+						filetypes = {},
 					}
 				end
+        table.insert(Config.mason_tools[tool].filetypes, language)
+        if language == "bash" then -- Automatically install tools for sh if bash is used
+          table.insert(Config.mason_tools[tool].filetypes, "sh")
+        end
 			end
 		end
 	end
@@ -342,7 +344,7 @@ now_if_args(function()
 	for _, lsp in ipairs(Config.enabled_lsps) do
 		local mappings = require("mason-lspconfig").get_mappings()
 		vim.api.nvim_create_autocmd("FileType", {
-			group = vim.api.nvim_create_augroup("mason-lsp-install", {}),
+			group = vim.api.nvim_create_augroup("mason-lsp-install", { clear = false }),
 			pattern = vim.lsp.config[lsp].filetypes,
 			once = true,
 			callback = function()
@@ -357,7 +359,7 @@ now_if_args(function()
 	-- Use autocmds to install required tools:
 	for _, tool in pairs(vim.tbl_keys(Config.mason_tools)) do
 		vim.api.nvim_create_autocmd("FileType", {
-			group = vim.api.nvim_create_augroup("mason-tool-install", {}),
+			group = vim.api.nvim_create_augroup("mason-tool-install", { clear = false}),
 			pattern = Config.mason_tools[tool].filetypes,
 			once = true,
 			callback = function()
