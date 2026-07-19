@@ -51,7 +51,12 @@ Config.languages = {
 			"html",
 		},
 	},
-	javascript = {},
+	javascript = {
+		lsp = {
+			"biome",
+			"tsgo",
+		},
+	},
 	json = {},
 	lua = {
 		mason = {
