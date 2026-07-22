@@ -444,6 +444,11 @@ now(function()
 	})
 	require("catppuccin").setup({
     flavour = "latte",
+		integrations = {
+			mini = {
+				enabled = true,
+			},
+		},
 	})
 	vim.cmd("colorscheme catppuccin-nvim")
 end)
