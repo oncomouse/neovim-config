@@ -442,7 +442,10 @@ now(function()
 			name = "catppuccin",
 		},
 	})
-	vim.cmd("colorscheme catppuccin-latte")
+	require("catppuccin").setup({
+    flavour = "latte",
+	})
+	vim.cmd("colorscheme catppuccin-nvim")
 end)
 
 later(function()
