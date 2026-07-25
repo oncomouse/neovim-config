@@ -693,8 +693,8 @@ later(function()
 	-- - It overrides `:h (` and `:h )`.
 	-- Explanation: `gx`-`ia`-`gx`-`ila` <=> exchange current and last argument
 	-- Usage: when on `a` in `(aa, bb)` press `)` followed by `(`.
-	vim.keymap.set("n", "(", "gxiagxila", { remap = true, desc = "Swap arg left" })
-	vim.keymap.set("n", ")", "gxiagxina", { remap = true, desc = "Swap arg right" })
+	vim.keymap.set("n", "(", "gxiagxiNa", { remap = true, desc = "Swap arg left" })
+	vim.keymap.set("n", ")", "gxiagxina", { desc = "Swap arg right", remap = true })
 end)
 
 -- Autopairs functionality. Insert pair when typing opening character and go over
