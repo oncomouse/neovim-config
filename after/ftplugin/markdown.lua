@@ -28,8 +28,8 @@ vim.b.miniai_config = {
 		["*"] = spec_pair("*", "*", { type = "greedy" }),
 		["_"] = spec_pair("_", "_", { type = "greedy" }),
 		["`"] = spec_pair("`", "`", { type = "greedy" }),
-		["l"] = { "%b[]%b()", "^%[().-()%]%([^)]+%)$" }, -- Link targeting name
-		["L"] = { "%b[]%b()", "^%[.-%]%(()[^)]+()%)$" }, -- Link targeting href
+		-- ["l"] = { "%b[]%b()", "^%[().-()%]%([^)]+%)$" }, -- Link targeting name
+		-- ["L"] = { "%b[]%b()", "^%[.-%]%(()[^)]+()%)$" }, -- Link targeting href
 	},
 }
 vim.b.minisurround_config = {
