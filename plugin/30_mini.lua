@@ -597,6 +597,35 @@ end)
 -- - `:h MiniJump2d.gen_spotter` - list of available spotters
 later(function()
 	require("mini.jump2d").setup()
+
+	local operator
+	function _G.remote_jump_operator(mode)
+		local start_pos = vim.api.nvim_buf_get_mark(0, "[")
+		local end_pos = vim.api.nvim_buf_get_mark(0, "]")
+		vim.cmd("normal! m'")
+		vim.api.nvim_win_set_cursor(0, start_pos)
+		vim.cmd("normal! " .. (mode == "line" and "V" or "v"))
+		vim.api.nvim_win_set_cursor(0, end_pos)
+		vim.api.nvim_input(vim.api.nvim_replace_termcodes(operator .. "<C-o>", true, false, true))
+	end
+	vim.keymap.set("o", "r", function()
+		vim.o.operatorfunc = "v:lua.remote_jump_operator"
+		operator = vim.v.operator -- Save the operator
+		vim.api.nvim_input(vim.api.nvim_replace_termcodes("<esc>", true, false, true))
+		vim.schedule(function()
+			MiniJump2d.start()
+			vim.api.nvim_input("g@") -- play custom operator so we can handle when finished
+		end)
+	end, { desc = "Goto to remote line" })
+	vim.keymap.set("o", "rr", function()
+		vim.o.operatorfunc = "v:lua.remote_jump_operator"
+		operator = vim.v.operator -- Save the operator
+		vim.api.nvim_input(vim.api.nvim_replace_termcodes("<esc>", true, false, true))
+		vim.schedule(function()
+			MiniJump2d.start(MiniJump2d.builtin_opts.line_start)
+			vim.api.nvim_input("g@_") -- play custom operator so we can handle when finished
+		end)
+	end, { desc = "Goto to remote line" })
 end)
 
 -- Special key mappings. Provides helpers to map:
