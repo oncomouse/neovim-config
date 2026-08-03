@@ -91,6 +91,10 @@ nmap_leader('bD', '<Cmd>lua MiniBufremove.delete(0, true)<CR>',  'Delete!')
 nmap_leader('bs', new_scratch_buffer,                            'Scratch')
 nmap_leader('bw', '<Cmd>lua MiniBufremove.wipeout()<CR>',        'Wipeout')
 nmap_leader('bW', '<Cmd>lua MiniBufremove.wipeout(0, true)<CR>', 'Wipeout!')
+-- Prefered menu bin
+nmap_leader('bK', '<Cmd>lua MiniBufremove.delete(0, true)<CR>', 'Kill!')
+nmap_leader('bk', '<Cmd>lua MiniBufremove.delete()<CR>', 'Kill')
+
 
 -- e is for 'Explore' and 'Edit'. Common usage:
 -- - `<Leader>ed` - open explorer at current working directory
@@ -265,10 +269,6 @@ nmap("yss", "ys_")
 -- emacs style binds:
 nmap("<C-x>b", "<cmd>Pick buffers<CR>")
 nmap("<C-x><C-f>", "<cmd>Pick files<CR>")
-
--- Prefered menu bin
-nmap_leader("bK", "<Cmd>lua MiniBufremove.delete(0, true)<CR>", "Kill!")
-nmap_leader("bk", "<Cmd>lua MiniBufremove.delete()<CR>", "Kill")
 
 -- Quick buffer switching by position (works great with mini.tabbar)
 local function buffer_jump(bn)
