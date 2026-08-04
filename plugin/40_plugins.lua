@@ -456,20 +456,3 @@ now(function()
 	})
 	vim.cmd("colorscheme catppuccin-nvim")
 end)
-
-later(function()
-	vim.pack.add({ "https://github.com/oncomouse/nvim-ref" })
-	require("nvim-ref").setup({
-		bibfiles = {
-			"~/Reading/library.bib",
-		},
-		include_pagenumbers = true,
-		mappings = {
-			{
-				"i",
-				"<C-c>@",
-				"insert.citation",
-			},
-		},
-	})
-end)
