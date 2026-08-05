@@ -151,9 +151,6 @@ nmap_leader('fi', '<Cmd>Pick icons<CR>',                        'Icons')
 nmap_leader('fH', '<Cmd>Pick hl_groups<CR>',                    'Highlight groups')
 nmap_leader('fl', '<Cmd>Pick buf_lines scope="all"<CR>',        'Lines (all)')
 nmap_leader('fL', '<Cmd>Pick buf_lines scope="current"<CR>',    'Lines (buf)')
-nmap_leader('fof', '<Cmd>Pick org_files<CR>',                   'Org files')
-nmap_leader('foh', '<Cmd>Pick org_headlines<CR>',               'Org headlines')
-nmap_leader('fog', '<Cmd>Pick org_grep<CR>',                    'Org file grep')
 nmap_leader('fm', '<Cmd>Pick git_hunks<CR>',                    'Modified hunks (all)')
 nmap_leader('fM', '<Cmd>Pick git_hunks path="%"<CR>',           'Modified hunks (buf)')
 nmap_leader('fr', '<Cmd>Pick resume<CR>',                       'Resume')
@@ -254,6 +251,8 @@ nmap_leader('vv', '<Cmd>lua MiniVisits.add_label("core")<CR>',    'Add "core" la
 nmap_leader('vV', '<Cmd>lua MiniVisits.remove_label("core")<CR>', 'Remove "core" label')
 nmap_leader('vl', '<Cmd>lua MiniVisits.add_label()<CR>',          'Add label')
 nmap_leader('vL', '<Cmd>lua MiniVisits.remove_label()<CR>',       'Remove label')
+
+nmap_leader('vg', '<cmd>Neogit<CR>', 'Neogit status')
 
 nmap('<M-o>', '<cmd>lua MiniBracketed.window("forward")<CR>')
 
