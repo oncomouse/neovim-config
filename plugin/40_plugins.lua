@@ -83,7 +83,7 @@ Config.languages = {
   python = {
     lsp = {
       "ruff",
-      "zuban",
+      "ty",
     },
   },
   svelte = {
