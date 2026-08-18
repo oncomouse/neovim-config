@@ -172,7 +172,13 @@ now_if_args(function()
 		-- vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
 		vim.wo[0][0].foldexpr = "v:lua.vim.treesitter.foldexpr()"
 		vim.wo[0][0].foldmethod = "expr"
-		vim.treesitter.start(ev.buf)
+    local ts_available = pcall(vim.treesitter.start, ev.buf)
+		if not ts_available then
+			vim.notify(
+				"Treesitter parser not available for this buffer (it's likely installing). Run :=vim.treesitter.start(0) when ready.",
+				vim.log.levels.INFO
+			)
+		end
 	end
 	Config.new_autocmd("FileType", filetypes, ts_start, "Start tree-sitter")
 end)
