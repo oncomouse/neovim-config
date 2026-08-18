@@ -19,89 +19,89 @@ local now_if_args = Config.now_if_args
 -- can set type = "formatter"|"linter"|"dap" to tell the system which kind of
 -- tool each is, so they are installed correctly.
 Config.languages = {
-  bash = {
-    mason = { -- These are required for bash-lsp
-      shellcheck = {},
-      shfmt = {},
-    },
-    lsp = {
-      "bashls",
-    },
-  },
-  css = {
-    lsp = {
-      "cssls",
-      "biome",
-    },
-  },
-  diff = {},
-  fish = {
-    lsp = {
-      "fish_lsp",
-    },
-  },
-  git_config = {},
-  git_rebase = {},
-  gitattributes = {},
-  gitcommit = {},
-  gitignore = {},
-  html = {
-    lsp = {
-      "biome",
-      "html",
-    },
-  },
-  javascript = {
-    lsp = {
-      "biome",
-      "tsgo",
-    },
-  },
-  json = {},
-  lua = {
-    mason = {
-      stylua = { type = "formatter" },
-    },
-    lsp = {
-      "lua_ls",
-    },
-  },
-  markdown = {
-    lsp = {
-      "harper_ls"
-    }
-  },
-  markdown_inline = {},
-  ocaml = {
-    lsp = {
-      "ocamllsp",
-    },
-    mason = {
-      ocamlformat = { type = "formatter" },
-    },
-  },
-  python = {
-    lsp = {
-      "ruff",
-      "ty",
-    },
-  },
-  svelte = {
-    lsp = {
-      "svelte",
-    },
-  },
-  typst = {
-    lsp = {
-      "tinymist",
-    },
-  },
-  vimdoc = {},
-  yaml = {
-    lsp = {
-      "yamlls",
-    }
-  }
+	bash = {
+		mason = { -- These are required for bash-lsp
+			shellcheck = {},
+			shfmt = {},
+		},
+		lsp = {
+			"bashls",
+		},
+	},
+	css = {
+		lsp = {
+			"cssls",
+			"biome",
+		},
+	},
+	diff = {},
+	fish = {
+		lsp = {
+			"fish_lsp",
+		},
+	},
+	git_config = {},
+	git_rebase = {},
+	gitattributes = {},
+	gitcommit = {},
+	gitignore = {},
+	html = {
+		lsp = {
+			"biome",
+			"html",
+		},
+	},
+	javascript = {
+		lsp = {
+			"biome",
+			"tsgo",
+		},
+	},
+	json = {},
+	lua = {
+		mason = {
+			stylua = { type = "formatter" },
+		},
+		lsp = {
+			"lua_ls",
+		},
+	},
+	markdown = {
+		lsp = {
+			"harper_ls",
+		},
+	},
+	markdown_inline = {},
+	ocaml = {
+		lsp = {
+			"ocamllsp",
+		},
+		mason = {
+			ocamlformat = { type = "formatter" },
+		},
+	},
+	python = {
+		lsp = {
+			"ruff",
+			"ty",
+		},
+	},
+	svelte = {
+		lsp = {
+			"svelte",
+		},
+	},
+	typst = {
+		lsp = {
+			"tinymist",
+		},
+	},
+	vimdoc = {},
+	yaml = {
+		lsp = {
+			"yamlls",
+		},
+	},
 }
 
 -- Cache language keys for reuse across closures
@@ -435,6 +435,12 @@ later(function()
 	})
 end)
 
+now(function()
+	add({
+		"https://github.com/b0o/SchemaStore.nvim",
+	})
+end)
+
 -- Magit emulation for Neovim
 later(function()
 	add({
@@ -452,7 +458,7 @@ now(function()
 		},
 	})
 	require("catppuccin").setup({
-    flavour = "latte",
+		flavour = "latte",
 		integrations = {
 			mini = {
 				enabled = true,
