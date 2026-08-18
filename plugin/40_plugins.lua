@@ -97,6 +97,11 @@ Config.languages = {
     },
   },
   vimdoc = {},
+  yaml = {
+    lsp = {
+      "yamlls",
+    }
+  }
 }
 
 -- Cache language keys for reuse across closures
