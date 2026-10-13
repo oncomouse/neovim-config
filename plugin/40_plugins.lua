@@ -54,7 +54,7 @@ Config.languages = {
 	javascript = {
 		lsp = {
 			"biome",
-			"tsgo",
+			"tsc",
 		},
 	},
 	json = {},
